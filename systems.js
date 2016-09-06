@@ -5,6 +5,7 @@ systems.input = function(canvas) {
 		_pressed: {},
 		RIGHT: 39,
 		LEFT: 37,
+		SPACE: 32,
 
 		isDown: function(keyCode) {
 			return this._pressed[keyCode];

@@ -8,7 +8,7 @@ var invaders = (function() {
 	var MAX_VERTICAL_VELOCITY = 1;
 
 	invaders.velocity = [HORIZONTAL_VELOCITY, VERTICAL_VELOCITY];
-	invaders.entities = [];
+	invaders.entities = []; // FIX: switch array for a linked list to enable in-list removal of entities
 	for (var i = 0; i < 50; i++) {
 		invaders.entities[i] = new Entity();
 		invaders.entities[i].addComponent(new Components.Group('01'));
@@ -19,16 +19,20 @@ var invaders = (function() {
 
 	invaders.update = function(grid) {
 
-		if (atEdge(grid, this.invaders.entities, this.invaders.velocity)) {
+		function fireBullet() {
+			
+		}
+
+		if (atEdge(grid, this.invaders.entities, this.invaders.velocity)) { //invaders reached outer grid edge
 			this.invaders.velocity[HORIZONTAL] *= -1; //negative => postive & postive => negative
-			if (this.invaders.velocity[HORIZONTAL] > 0) {
+			if (this.invaders.velocity[HORIZONTAL] > 0) { //increase invaders velocity
 				this.invaders.velocity[HORIZONTAL]++;
 			} else {
 				this.invaders.velocity[HORIZONTAL]--;
 			}
-			updatePosition(this.invaders.velocity[HORIZONTAL], this.invaders.velocity[VERTICAL]);
+			updatePosition(this.invaders.velocity[HORIZONTAL], this.invaders.velocity[VERTICAL]); //move invaders down one step
 		} else {
-			updatePosition(this.invaders.velocity[HORIZONTAL]);
+			updatePosition(this.invaders.velocity[HORIZONTAL]); //move invaders one step
 		}
 
 		/*

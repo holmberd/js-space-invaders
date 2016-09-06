@@ -29,6 +29,11 @@ var player = (function() {
 				}
 				return false;
 			};
+		},
+		shoot: function() {
+			this.enter = function() {
+
+			};
 		}
 	};
 
@@ -37,6 +42,8 @@ var player = (function() {
 			return new _states.moveLeft();
 		} else if (input.isDown(input.RIGHT)) {
 			return new _states.moveRight();
+		} else if (input.isDown(input.SPACE)) {
+
 		} return null;
 		};
 

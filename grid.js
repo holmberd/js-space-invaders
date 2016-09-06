@@ -1,62 +1,89 @@
-function Cell(str, location) {
-	this.str = str;
-	this.location = location || null;
+/**
+
+JSON prototype data delegation
+
+{
+  "name": "goblin grunt",
+  "minHealth": 20,
+  "maxHealth": 30,
+  "resists": ["cold", "poison"],
+  "weaknesses": ["fire", "light"]
 }
 
-function Location(x, y) {
-	this.x = x;
-	this.y = y;
+{
+  "name": "goblin wizard",
+  "prototype": "goblin grunt",
+  "spells": ["fire ball", "lightning bolt"]
 }
+
+{
+  "name": "goblin archer",
+  "prototype": "goblin grunt",
+  "attacks": ["short bow"]
+}
+
+*/
+
+/************************************************************************/
+
 
 function Grid(height, width) {
-	var space = createSpace(height, width);
-	this.space = space;
+	var _cells = new Array(width * height);
+	this.cells = _cells;
 	this.height = height;
 	this.width = width;
-
-	function createSpace(height, width) {
-		var _grid = new Array(height);
-		for (var i = 0; i < height; i++) {
-			_grid[i] = [];
-			for (var n = 0; n < width; n++) {
-				_grid[i][n] = null;
-			}
-		}
-		return _grid;
-	}
 }
 
-Grid.prototype.isInside = function(location) {
-	if (location.y > (this.height - 1) || location.y < 0) return false;
-    if (location.x > (this.width - 1) || location.x < 0) return false;
+Grid.prototype.isInside = function(vector) {
+	if (vector.y > (this.height - 1) || vector.y < 0) return false;
+    if (vector.x > (this.width - 1) || vector.x < 0) return false;
     return true;
 };
 
-Grid.prototype.set = function(location, cell) {
-	cell.location = location;
-	this.space[location.y][location.x] = cell;
+Grid.prototype.setCell = function(vector, value) {
+	this.cells[vector.x + this.width * vector.y] = value;
 };
 
-Grid.prototype.get = function(location) {
-	return this.space[location.y][location.x];
+Grid.prototype.getCell = function(vector) {
+	return this.cells[vector.x + this.width * vector.y];
 };
 
-Grid.prototype.delete = function(location) {
-	this.space[location.y][location.x] = null;
+Grid.prototype.removeCell = function(vector) {
+	this.cells[vector.x + this.width * vector.y] = null;
 };
 
-Grid.prototype.moveTo = function(newLocation, cell) {
-		var currLocation = cell.location;
-		this.set(newLocation, cell);
-		this.delete(currLocation);
+Grid.prototype.moveCell = function(current, next) {
+	this.setCell(next, this.get(current));
+	this.removeCell(current);
 };
 
-Grid.prototype.clear = function() {
+Grid.prototype.clearCells = function() {
+	var vector = null;
+	for (var i = 0; i < this.cells.length; i++) {
+			vector = new vector(x, y);
+			this.removeCell(vector);
+		}
+};
+
+Grid.prototype.toString = function() {
+	var string = '';
+	var cellBuffer = null;
 	for (var y = 0; y < this.height; y++) {
 		for (var x = 0; x < this.width; x++) {
-			var location = new Location(x, y);
-			this.delete(location);
+			cellBuffer = this.getCell(new Vector(x, y)); 
+			if (cellBuffer) {
+				string += cellBuffer;
+			}
+			else {
+				string += '.';
+			}
 		}
+		string += '\n';
 	}
-	return true;
+	return string;
+};
+
+Grid.prototype.print = function() {
+	var output = this.toString();
+	console.log(output);
 };

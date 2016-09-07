@@ -13,6 +13,10 @@ var invaders = (function() {
 	invaders.init = function() {
 		for (var n = 0; n < NUM_OF_INVADERS; n++) {
 			var invader = new Entity();
+			invader.addComponent(new Components.Group('01'));
+			invader.addComponent(new Components.Health(1));
+			invader.addComponent(new Components.Collision());
+			invader.addComponent(new Components.Visible());
 			invaders.list.append(invader);
 		}
 		invaders.head = this.list.getHead();

@@ -1,4 +1,4 @@
-(function(){
+var Entity = (function(){
 
 	function Entity(vector, sprite) {
 		var _killed = false;

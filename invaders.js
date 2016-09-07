@@ -1,64 +1,51 @@
 var invaders = (function() {
 	var invaders = {};
+	var NUM_OF_INVADERS = 50;
 	var HORIZONTAL = 0;
 	var VERTICAL = 1;
 	var HORIZONTAL_VELOCITY = 1;
 	var VERTICAL_VELOCITY = 1;
 	var MAX_HORIZONTAL_VELOCITY = 5;
 	var MAX_VERTICAL_VELOCITY = 1;
-
 	invaders.velocity = [HORIZONTAL_VELOCITY, VERTICAL_VELOCITY];
-	invaders.entities = []; // FIX: switch array for a linked list to enable in-list removal of entities
-	for (var i = 0; i < 50; i++) {
-		invaders.entities[i] = new Entity();
-		invaders.entities[i].addComponent(new Components.Group('01'));
-		invaders.entities[i].addComponent(new Components.Health(1));
-		invaders.entities[i].addComponent(new Components.Collision());
-		invaders.entities[i].addComponent(new Components.Visible());
-	}
+	invaders.list = new List();
+
+	invaders.init = function() {
+		for (var n = 0; n < NUM_OF_INVADERS; n++) {
+			var invader = new Entity();
+			invaders.list.append(invader);
+		}
+		invaders.head = this.list.getHead();
+	};
 
 	invaders.update = function(grid) {
 
 		function fireBullet() {
-			
+
 		}
 
-		if (atEdge(grid, this.invaders.entities, this.invaders.velocity)) { //invaders reached outer grid edge
-			this.invaders.velocity[HORIZONTAL] *= -1; //negative => postive & postive => negative
-			if (this.invaders.velocity[HORIZONTAL] > 0) { //increase invaders velocity
-				this.invaders.velocity[HORIZONTAL]++;
+		if (atEdge(grid, this.list, this.velocity)) { // invaders reached outer grid edge
+			this.velocity[HORIZONTAL] *= -1; // negative => postive & postive => negative
+			if (this.velocity[HORIZONTAL] > 0) { // increase invaders velocity
+				this.velocity[HORIZONTAL]++;
 			} else {
-				this.invaders.velocity[HORIZONTAL]--;
+				this.velocity[HORIZONTAL]--;
 			}
-			updatePosition(this.invaders.velocity[HORIZONTAL], this.invaders.velocity[VERTICAL]); //move invaders down one step
+			updatePosition(this.velocity[HORIZONTAL], this.velocity[VERTICAL]); // move invaders down one step
 		} else {
-			updatePosition(this.invaders.velocity[HORIZONTAL]); //move invaders one step
+			updatePosition(this.velocity[HORIZONTAL]); // move invaders one step
 		}
-
-		/*
-		if (atEdge && this.invaders.velocity[HORIZONTAL] > 0) {
-			this.invaders.velocity[HORIZONTAL] = -this.invaders.velocity[HORIZONTAL];
-			updateVerticalPosition(this.invaders.velocity[HORIZONTAL], this.invaders.velocity[VERTICAL]);
-		} else if (atEdge && this.invaders.velocity[HORIZONTAL] < 0) {
-			this.invaders.velocity[HORIZONTAL] = INVADER__VERTICAL_VELOCITY;
-			updateVerticalPosition(this.invaders.velocity[HORIZONTAL], this.invaders.velocity[VERTICAL]);
-		} else {
-			updatePosition(this.invaders.velocity[HORIZONTAL]);
-		}
-		*/
 
 		function updatePosition(horizontal, vertical) {
 			var vector = new Vector(horizontal, vertical || 0);
-			for (var invader in this.invaders.entities) {
+			for (var invader = this.head; invader; invader = invader.next) { // FIX: replace for a list.map() / list.forEach() method
 				invader.vector.plus(vector);
-				//invader.vector.x += horizontal;
-				//invader.vector.y += vertical || 0;
 			}
 		}
 
 		function atEdge(grid, invaders, velocity) {
 			var vector = null;
-			for (var invader in invaders) {
+			for (var invader = this.head; invader; invader = invader.next) {
 				vector = new Vector(invader.vector.x + velocity, invader.vector.y);
 				if (!grid.isInside(vector)) {
 					return true;
@@ -69,5 +56,6 @@ var invaders = (function() {
 
 		return this;
 	};
+
 	return invaders;
 })();

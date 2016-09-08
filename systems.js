@@ -43,6 +43,23 @@ systems.input = {
 		    	}
 		    }
 		}
+	},
+	renderCanvas: function(entities, grid) {
+		clearCanvas();
+
+		drawCanvas(entities.player);
+
+		function drawCanvas(entity) {
+			entity.vector.forEach(function(v) {
+				grid.getCell(v).style.backgroundColor = 'blue';
+			}, this);
+		}
+
+		function clearCanvas() {
+			grid.forEach(function(cell) {
+				cell.style.backgroundColor = '#fff';
+			});
+		}
 	}
 };
 

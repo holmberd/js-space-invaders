@@ -65,6 +65,10 @@ Grid.prototype.clearCells = function() {
 		}
 };
 
+Grid.prototype.forEach = function(fn) {
+	this.cells.forEach(fn, this);
+};
+
 Grid.prototype.toString = function() {
 	var string = '';
 	var cellBuffer = null;
@@ -72,10 +76,10 @@ Grid.prototype.toString = function() {
 		for (var x = 0; x < this.width; x++) {
 			cellBuffer = this.getCell(new Vector(x, y)); 
 			if (cellBuffer) {
-				string += cellBuffer;
+				string += ' ' + cellBuffer + ' ';
 			}
 			else {
-				string += '.';
+				string += ' . ';
 			}
 		}
 		string += '\n';

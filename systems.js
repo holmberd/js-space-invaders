@@ -1,7 +1,7 @@
 var systems = {};
 
-systems.input = function(canvas) {
-	this.inputHandler = {
+systems.input = {
+	inputHandler: {
 		_pressed: {},
 		RIGHT: 39,
 		LEFT: 37,
@@ -16,12 +16,35 @@ systems.input = function(canvas) {
 		onKeyup: function(event) {
 			delete this._pressed[event.keyCode];
 		}
-	};
-	this.init = function() {
-		canvas.addEventListener('keyup', function(event) { this.inputHandler.onKeyup(event);} , false);
-		canvas.addEventListener('keydown', function(event) { this.inputHandler.onKeydown(event); }, false);
-	};
+	},
+	init: function(canvas) {
+		window.addEventListener('keyup', function(event) { event.preventDefault(); systems.input.inputHandler.onKeyup(event); }, false);
+		window.addEventListener('keydown', function(event) { event.preventDefault(); systems.input.inputHandler.onKeydown(event); }, false);
+	}
  };
+
+ systems.render = {
+ 	init: function(canvas, grid) {
+		makeBoard(canvas, grid);
+
+		function makeBoard(table, grid) {
+		    var height = grid.height,
+		    	width = grid.width,
+		    	tableRow = null,
+		    	tableCell = null,
+		    	vector = null;
+		    for (var row = 0; row < height; row++) {
+		    	tableRow = table.insertRow(row);
+		    	for (var col = 0; col < width; col++) {
+		    		tableCell = tableRow.insertCell(col);
+		    		tableCell.id = 'cell' + String(row) + String(col);
+		    		vector = new Vector(col, row);
+		    		grid.setCell(vector, tableCell);
+		    	}
+		    }
+		}
+	}
+};
 
 systems.collision = function(entities) {
 

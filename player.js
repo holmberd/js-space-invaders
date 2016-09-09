@@ -62,22 +62,22 @@ var player = (function() {
 		}
 	};
 
-	player.handleInput = function(input) {
-		if (input.isDown(input.LEFT)) {
-			return new this._states.moveLeft();
-		} else if (input.isDown(input.RIGHT)) {
-			return new this._states.moveRight();
-		} else if (input.isDown(input.SPACE)) {
-
-		} return null;
-		};
-
 	player.update = function(input) {
-		var state = this.handleInput(input);
+		var state = handleInput(input);
 		if (state) {
 			_state = state;
 			_state.enter();
 			return this;
+		}
+
+		function handleInput(input) {
+			if (input.isDown(input.LEFT)) {
+				return new player._states.moveLeft();
+			} else if (input.isDown(input.RIGHT)) {
+				return new player._states.moveRight();
+			} else if (input.isDown(input.SPACE)) {
+
+			} return null;
 		}
 	};
 

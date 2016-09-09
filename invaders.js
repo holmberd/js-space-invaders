@@ -8,6 +8,7 @@ var invaders = (function() {
 	var MAX_HORIZONTAL_VELOCITY = 5;
 	var MAX_VERTICAL_VELOCITY = 1;
 	invaders.velocity = new Vector(HORIZONTAL_VELOCITY, VERTICAL_VELOCITY);
+	invaders.vector = [];
 	invaders.list = new List();
 
 	var map = [new Vector(7,5),new Vector(8,5), new Vector(9,5)];
@@ -21,6 +22,9 @@ var invaders = (function() {
 			invader.addComponent(new Components.Collision());
 			invader.addComponent(new Components.Visible());
 			invaders.list.append(invader);
+			map.invaders.forEach(function(point) {
+				this.vector.push(point);
+			}, this);
 		}
 		invaders.head = this.list.getHead();
 	};

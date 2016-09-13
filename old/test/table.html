@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Space Invader</title>
+		<script src='./grid.js'></script>
+		<script src='./vector.js'></script>
+		<style>
+			table {
+				display:inline-block;
+				border-collapse: collapse;
+			}
+			table td {
+				/*border:1px solid black;*/
+				text-align:center;
+				width:15px;
+				height:15px;
+				padding:0; 
+				margin:0;
+			}
+			#scene-container {
+				display: inline-block;
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='scene-container'>
+			<table id='board'></table>
+		</div>
+	<script>
+		var table = document.querySelector('#board');
+		var grid = new Grid(30,24);
+		makeBoard(table, grid);
+
+		function makeBoard(table, grid) {
+		    var height = grid.height,
+		    	width = grid.width,
+		    	tableRow = null,
+		    	tableCell = null,
+		    	vector = null;
+		    for (var row = 0; row < height; row++) {
+		    	tableRow = table.insertRow(row);
+		    	for (var col = 0; col < width; col++) {
+		    		tableCell = tableRow.insertCell(col);
+		    		tableCell.id = 'cell' + String(row) + String(col);
+		    		vector = new Vector(col, row);
+		    		grid.setCell(vector, tableCell);
+		    	}
+		    }
+		}
+	</script>
+
+	</body>
+</html>

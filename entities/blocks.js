@@ -8,6 +8,7 @@ var Entity = require('./entity.js');
  */
 
  function Block(scope, point) {
+
  	var SPEED = 0,
  		HEALTH = 1,
  		SPRITE_HEIGHT = 15,
@@ -46,8 +47,8 @@ var Entity = require('./entity.js');
 			[23,4], [23,5], [23,11], [23,12], [23,18], [23,19]];
 
  	// set up all the blocks and handle them in the block object
- 	for (var i = 0, block = null; i <= NUM_OF_BLOCKS; i++) {
- 		block = new Block(new Point(BLOCK_POS[i][1], BLOCK_POS[i][0]));
+ 	for (var i = 0, block = null; i < NUM_OF_BLOCKS; i++) {
+ 		block = new Block(scope, new Point(BLOCK_POS[i][1], BLOCK_POS[i][0]));
  		scope.state.entities[block.id] = block;
  	}
 

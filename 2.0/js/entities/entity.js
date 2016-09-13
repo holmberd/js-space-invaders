@@ -3,11 +3,10 @@
 /** Entity Class
  * This module contains the main entity class.
  */
-function Entity(groupName, point, speed, health, sprite) {
+function Entity(point, speed, health, sprite) {
 
     var _id = 'e' + Entity.prototype._count++;
     this.id = _id;
-    this.group = groupName;
     this.collides = true;
 
     var x = 0,
@@ -52,29 +51,12 @@ Entity.prototype.constructor = Entity;
 
 Entity.prototype._count = 0;
 
-Entity.prototype.inBoundary = function(scope) {
-    var maxHeight = scope.constants.height - this.sprite.height,
-        maxWidth = scope.constants.width - this.sprite.width,
-        x = this.state.position.x,
-        y = this.state.position.y;
-    if (x < 0 || x > maxWidth) return false;
-    if (y < 0 || y > maxHeight) return false;
+Entity.prototype.inBoundary = function(scope, point) {
+    var maxHeight = scope.constants.height - this.sprite.height;
+    var maxWidth = scope.constants.width - this.sprite.width;
+    if (point.x < 0 || point.x > maxWidth) return false;
+    if (point.y < 0 || point.y > maxHeight) return false;
     return true;
-};
-
-Entity.prototype.haveCollidedWith = function(entity) {
-    var h = entity.sprite.height,
-        w = entity.sprite.width,
-        x = this.state.position.x,
-        y = this.state.position.y,
-        _x = entity.state.position.x,
-        _y = entity.state.position.y;
-        
-    if (x >= _x && y >= _y) {
-        if (x <= _x * w && y <= _y * h) {
-            return true;
-        }
-    } return false;
 };
 
 Entity.prototype.kill = function() {

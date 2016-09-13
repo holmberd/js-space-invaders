@@ -5,7 +5,7 @@ var gameUpdate = require('./core/game.update.js');
 var gameRender = require('./core/game.render.js');
 var input = require('./utils/utils.input.js');
 var Player = require('./entities/player.js');
-var Bullet = require('./entities/bullet.js');
+var Bullet = require('./entities/playerbullet.js');
 
 var container = document.querySelector('#container');
 

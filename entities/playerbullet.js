@@ -7,11 +7,12 @@ var Entity = require('./entity.js');
  * Main player bullet entity module.
  */
 function PlayerBullet(scope, x, y) {
-    var SPRITE_HEIGHT = 3,
+    var SPRITE_HEIGHT = 8,
         SPRITE_WIDTH = 3,
         SPRITE_IMAGE = null,
-        BULLET_SPEED = 3;
-        BULLET_HEALTH = 1;
+        BULLET_SPEED = 6,
+        BULLET_HEALTH = 1,
+        BULLET_GROUP_NAME = 'playerbullet';
 
     var point = new Point(x, y);
     var sprite = {
@@ -20,7 +21,7 @@ function PlayerBullet(scope, x, y) {
         image: SPRITE_IMAGE
     };
 
-    var bullet = new Entity(point, BULLET_SPEED, BULLET_HEALTH, sprite);
+    var bullet = new Entity(BULLET_GROUP_NAME, point, BULLET_SPEED, BULLET_HEALTH, sprite);
 
     // Draw the bullet on the canvas
     bullet.render = function bulletRender() {
@@ -36,7 +37,7 @@ function PlayerBullet(scope, x, y) {
     // Mutates state as needed for proper rendering next state
     bullet.update = function bulletUpdate() {
         var point = new Point(0, bullet.state.position.y);
-        if (bullet.inBoundary(scope, point) && !bullet.state.killed) {
+        if (bullet.inBoundary(scope) && !bullet.state.killed) { // FIX: probably don't need killed state when already deleting prop from entities state
             bullet.state.position.y -= bullet.state.moveSpeed;
         } else {
             delete scope.state.entities[bullet.id];

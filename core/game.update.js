@@ -14,7 +14,7 @@ function gameUpdate ( scope ) {
             var entities = state.entities;
             // Loop through entities
             for (var entity in entities) {
-                // Fire off each active entities `render` method
+                // Fire off each active entities `update` method
                 entities[entity].update(tFrame);
             }
         }

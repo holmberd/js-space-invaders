@@ -39,22 +39,24 @@ function Player(scope) {
     var inputStates = {
         moveLeft: function() {
             this.enter = function() {
-                var newPoint = new Point(player.state.position.x - player.state.moveSpeed, player.state.position.y);
-                if (player.inBoundary(scope, newPoint)) {
-                    player.state.position.x -= player.state.moveSpeed;
+                player.state.position.x -= player.state.moveSpeed;
+                if (player.inBoundary(scope)) {
+                    return this;
                 } else {
                     player.state.position.x = 0;
                 }
+                return this;
             };
         },
         moveRight: function() {
             this.enter = function() {
-                var newPoint = new Point(player.state.position.x + player.state.moveSpeed, player.state.position.y);
-                if (player.inBoundary(scope, newPoint)) {
-                    player.state.position.x += player.state.moveSpeed;
+                player.state.position.x += player.state.moveSpeed;
+                if (player.inBoundary(scope)) {
+                    return this;
                 } else {
                     player.state.position.x = scope.constants.width - player.sprite.width;    
                 }
+                return this;
             };
         },
         shoot: function(tFrame) {

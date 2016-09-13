@@ -8,7 +8,6 @@ var Entity = require('./entity.js');
  * Main player entity module.
  */
 function Player(scope) {
-    var that = scope;
 
     // set up const player globals
     var START_POS_X = scope.constants.width / 2,
@@ -17,8 +16,9 @@ function Player(scope) {
         SPRITE_WIDTH = 45,
         SPRITE_IMAGE = null,
         PLAYER_LIVES = 3,
-        PLAYER_SPEED = 3,
-        PLAYER_HEALTH = 1;
+        PLAYER_SPEED = 6,
+        PLAYER_HEALTH = 1,
+        PLAYER_GROUP_NAME = 'player';
 
     // set up globals for firing timing
     var elapsed = null,
@@ -32,11 +32,11 @@ function Player(scope) {
         width: SPRITE_WIDTH,
         image: SPRITE_IMAGE
     };
-    var lives = PLAYER_LIVES;
 
-    var player = new Entity(point, PLAYER_SPEED, PLAYER_HEALTH, sprite);
+    var player = new Entity(PLAYER_GROUP_NAME, point, PLAYER_SPEED, PLAYER_HEALTH, sprite);
+    player.state.lived = PLAYER_LIVES;
 
-    player._inputStates = {
+    var inputStates = {
         moveLeft: function() {
             this.enter = function() {
                 var newPoint = new Point(player.state.position.x - player.state.moveSpeed, player.state.position.y);
@@ -64,8 +64,63 @@ function Player(scope) {
                 bullet.state.position.y = player.state.position.y;
                 scope.state.entities[bullet.id] = bullet;
             };
+            // set `now` property on shoot-event so we can put a delay and restrict rate of fire
             this.before = tFrame;
         }
+    };
+
+    // Fired via the global update method.
+    // Mutates state as needed for proper rendering next state
+    player.update = function playerUpdate(tFrame) {
+        // Check if keys are pressed, if so, update the players position.
+        var moveState = moveInputHandler();
+        if (moveState) {
+            moveState.enter();
+        }
+
+        var fireState = fireInputHandler(tFrame);
+        if (fireState) {
+            fireState.enter();
+        }
+
+        function fireInputHandler(tFrame) {
+            // handles firing input
+            if (input.isDown(input.SPACE)) {
+                var shoot = null;
+                if (!before) {
+                    shoot = new inputStates.shoot(tFrame);
+                    before = tFrame;
+                    return shoot;
+                } else {
+                    elapsed = tFrame - before;
+                    // if elapsed time is bigger than minimum allowed, we can fire again
+                    if (elapsed > MIN_MS_FIRE) {
+                        before = null;
+                        return shoot;
+                    } 
+                }
+            }
+        }
+
+        function moveInputHandler() {
+            // handles left/right input
+            if (input.isDown(input.LEFT)) {
+                return new inputStates.moveLeft();
+            } else if (input.isDown(input.RIGHT)) {
+                return new inputStates.moveRight();
+            } return null;
+        }
+    };
+
+    player.collision = function playerCollision(entity) {
+        if (entity.group === 'bullet') {
+            if (player.haveCollidedWith(entity)) {
+                player.state.lives--;
+                console.log('player lost one life');
+            }
+            return;
+        }
+        return;
     };
 
     // Draw the player on the canvas
@@ -76,48 +131,6 @@ function Player(scope) {
             player.state.position.y,
             sprite.width, sprite.height
         );
-    };
-
-    // Fired via the global update method.
-    // Mutates state as needed for proper rendering next state
-    player.update = function playerUpdate(tFrame) {
-        // Check if keys are pressed, if so, update the players position.
-        var moveState = moveInput();
-        if (moveState) {
-            moveState.enter();
-        }
-
-        var fireState = fireInput(tFrame);
-        if (fireState) {
-            fireState.enter();
-        }
-
-        function fireInput(tFrame) {
-            // handles firing input
-            if (input.isDown(input.SPACE)) {
-                var shoot = null;
-                if (!before) {
-                    shoot = new player._inputStates.shoot(tFrame);
-                    before = tFrame;
-                    return shoot;
-                } else {
-                    elapsed = tFrame - before;
-                    if (elapsed > MIN_MS_FIRE) {
-                        before = null;
-                        return shoot;
-                    } 
-                }
-            }
-        }
-
-        function moveInput() {
-            // handles left/right input
-            if (input.isDown(input.LEFT)) {
-                return new player._inputStates.moveLeft();
-            } else if (input.isDown(input.RIGHT)) {
-                return new player._inputStates.moveRight();
-            } return null;
-        }
     };
 
     return player;

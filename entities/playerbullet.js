@@ -1,12 +1,12 @@
-// /js/entities/bullet.js
+// /js/entities/playerbullet.js
 
 var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
-/** Bullet Module
- * Main bullet entity module.
+/** Player bullet Module
+ * Main player bullet entity module.
  */
-function Bullet(scope, x, y) {
+function PlayerBullet(scope, x, y) {
     var SPRITE_HEIGHT = 3,
         SPRITE_WIDTH = 3,
         SPRITE_IMAGE = null,
@@ -21,8 +21,6 @@ function Bullet(scope, x, y) {
     };
 
     var bullet = new Entity(point, BULLET_SPEED, BULLET_HEALTH, sprite);
-    // set bullet property to 'invader' owned
-    bullet.pc = true;
 
     // Draw the bullet on the canvas
     bullet.render = function bulletRender() {

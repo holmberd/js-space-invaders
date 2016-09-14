@@ -2,6 +2,7 @@
 var cUtils = require('./utils/utils.canvas.js');
 var gameLoop = require('./core/game.loop.js');
 var gameUpdate = require('./core/game.update.js');
+var gameCollision = require('./core/game.collision.js');
 var gameRender = require('./core/game.render.js');
 var input = require('./utils/utils.input.js');
 var Player = require('./entities/player.js');
@@ -37,6 +38,7 @@ function Game(w, h, targetFps, showFps) {
 
     // Instantiate core modules with the current scope
     this.update = gameUpdate(this);
+    this.collision = gameCollision(this);
     this.render = gameRender(this);
     this.loop = gameLoop(this);
 

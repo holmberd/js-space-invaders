@@ -62,19 +62,12 @@ Entity.prototype.inBoundary = function(scope) {
     return true;
 };
 
-Entity.prototype.haveCollidedWith = function(entity) {
-    var h = entity.sprite.height,
-        w = entity.sprite.width,
-        x = this.state.position.x,
-        y = this.state.position.y,
-        _x = entity.state.position.x,
-        _y = entity.state.position.y;
-        
-    if (x >= _x && y >= _y) {
-        if (x <= _x * w && y <= _y * h) {
-            return true;
-        }
-    } return false;
+// 2D collision detection based of: 
+// https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+Entity.prototype.hasCollidedWith = function(entity) {
+    var rect1 = { x: this.state.position.x, y: this.state.position.y, width: this.sprite.width, height: this.sprite.height };
+    var rect2 = { x: entity.state.position.x, y: entity.state.position.y, width: entity.sprite.width, height: entity.sprite.height };
+    return rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y;
 };
 
 Entity.prototype.kill = function() {

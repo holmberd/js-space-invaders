@@ -36,6 +36,16 @@ var Entity = require('./entity.js');
  	block.update = function blockUpdate() {
  		// subscribe to collision module events
  	};
+
+ 	block.collision = function blockCollision(entity) {
+ 		console.log('bajs');
+		if (block.hasCollidedWith(entity)) {
+		    console.log('Event: block collided with bullet');
+		    delete scope.state.entities[entity.id];
+		}
+		return;
+    };
+
  	return block;
  }
 

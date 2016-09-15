@@ -114,7 +114,7 @@ function Player(scope) {
         }
     };
 
-    player.collision = function playerCollision(entity) {
+    player.collision = function playerCollision(scope, entity) {
         if (entity.group === 'bullet') {
             if (player.haveCollidedWith(entity)) {
                 player.state.lives--;

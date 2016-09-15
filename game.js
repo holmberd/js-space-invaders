@@ -8,6 +8,7 @@ var input = require('./utils/utils.input.js');
 var Player = require('./entities/player.js');
 var Bullet = require('./entities/playerbullet.js');
 var createBlocks = require('./entities/blocks.js');
+var map = require('./conf/map.json');
 
 var container = document.querySelector('#container');
 
@@ -53,9 +54,8 @@ function Game(w, h, targetFps, showFps) {
         this.state.inactiveEntities.bullets.push(new Bullet(this, 0, 0));
     }
 
-    // Instantiate blocks
-    createBlocks(this);
-
+    // Instantiate blocks with map
+    createBlocks(this, map);
 
     // Instantiate player 
     this.state.entities.player = new Player(this);

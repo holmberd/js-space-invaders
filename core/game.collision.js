@@ -16,11 +16,11 @@
             var entities = state.entities;
             // Loop through entities
             for (var entity in entities) {
-            	if (entities[entity].hasOwnProperty('collision')) {
+            	if (entities[entity].collides) {
             		for (var entityOther in entities) {
             			if (entities[entityOther].group === 'bullet' || entities[entityOther].group === 'playerbullet' ) {
             				// Fire off each active entities `collision` method
-            				entities[entity].collision(entities[entityOther]);            				
+            				entities[entity].collision(scope, entities[entityOther]);            				
             			}
 
             		}

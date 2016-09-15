@@ -44,6 +44,11 @@ function PlayerBullet(scope, x, y) {
         }
     };
 
+    // FIX: dummy function, DO NOT REMOVE UNTIL DELEGATE CLASS HAS BEEN SORTED
+    bullet.collision = function() {
+        return;
+    };
+
     return bullet;
 }
 

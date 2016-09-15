@@ -9,6 +9,7 @@ function Entity(groupName, point, speed, health, sprite) {
     this.id = _id;
     this.group = groupName;
     this.collides = true;
+    this.delegate = {};
 
     var x = 0,
         y = 0,
@@ -48,7 +49,7 @@ function Entity(groupName, point, speed, health, sprite) {
     return this;
 }
 
-Entity.prototype.constructor = Entity;
+//Entity.prototype.constructor = Entity;
 
 Entity.prototype._count = 0;
 
@@ -74,5 +75,17 @@ Entity.prototype.kill = function() {
         this.state.killed = true;
         return this;
     };
+
+Entity.prototype.update = function() {
+    return this.delegate.update.apply(this, arguments);
+};
+
+Entity.prototype.render = function() {
+    return this.delegate.render.apply(this, arguments);
+};
+
+Entity.prototype.collision = function() {
+    return this.delegate.collision.apply(this, arguments);
+};
 
 module.exports = Entity;

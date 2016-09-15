@@ -33,7 +33,7 @@ function gameRender( scope ) {
             // Loop through entities
             for (var entity in entities) {
                 // Fire off each active entities `render` method
-                entities[entity].render();
+                entities[entity].render(scope);
             }
         }
     };

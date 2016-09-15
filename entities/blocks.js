@@ -7,7 +7,7 @@ var Entity = require('./entity.js');
  * Main block module
  */
 
-function createBlocks(scope) {
+function createBlocks(scope, map) {
 
 	var SPEED = 0,
 	HEALTH = 1,
@@ -22,20 +22,22 @@ function createBlocks(scope) {
 		image: SPRITE_IMAGE
 	};
 
- 	var NUM_OF_BLOCKS = 1, //24,
- 		map = [[25,10], [25,6], [25,3], [25,13], [25,17], [25,20],
-			[24,3], [24,4], [24,5], [24,6], [24,10], [24,11], [24,12], [24,13], [24,17], [24,18], [24,19], [24,20],
-			[23,4], [23,5], [23,11], [23,12], [23,18], [23,19]];
+ 	var NUM_OF_BLOCKS = 1; //24,
+
+	// instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
+	var delegateObj = new Block();
 
 	// set up all the blocks and handle them in the block object
  	for (var i = 0, block = {}; i < NUM_OF_BLOCKS; i++) {
  		block = new Entity(BLOCK_GROUP_NAME, new Point(map[i][1], map[i][0]), SPEED, HEALTH, sprite);
- 		block.delegate = new Block();
+ 		block.delegate = delegateObj;
  		scope.state.entities[block.id] = block;
  	}
  }
 
-	// delegate state object constructor for our blocks
+// delegate state object constructor for our blocks,
+// allows group entities to share render/update/collison functions
+// over the delegate objects prototype chain. 
 function Block() {}
 
 Block.prototype.render = function blockRender(scope){

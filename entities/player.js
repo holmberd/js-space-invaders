@@ -61,9 +61,11 @@ function Player(scope) {
         },
         shoot: function(tFrame) {
             this.enter = function() {
+                // Takes one of the inactive bullet entities from our array
                 var bullet = scope.state.inactiveEntities.bullets.splice(0,1)[0];
                 bullet.state.position.x = player.state.position.x + (player.sprite.width / 2) - (bullet.sprite.width / 2);
                 bullet.state.position.y = player.state.position.y;
+                // Place bullet in our active state of entities
                 scope.state.entities[bullet.id] = bullet;
             };
             // set `now` property on shoot-event so we can put a delay and restrict rate of fire
@@ -73,7 +75,7 @@ function Player(scope) {
 
     // Fired via the global update method.
     // Mutates state as needed for proper rendering next state
-    player.update = function playerUpdate(tFrame) {
+    player.update = function playerUpdate(scope, tFrame) {
         // Check if keys are pressed, if so, update the players position.
         var moveState = moveInputHandler();
         if (moveState) {
@@ -114,15 +116,12 @@ function Player(scope) {
         }
     };
 
-    player.collision = function playerCollision(scope, entity) {
-        if (entity.group === 'bullet') {
-            if (player.haveCollidedWith(entity)) {
-                player.state.lives--;
-                console.log('player lost one life');
-            }
-            return;
+    player.collision = function playerCollision(bullet) {
+        if (bullet.pc) {
+            player.state.lives--;
+            console.log('Event: player lost one life');
         }
-        return;
+        return this;
     };
 
     // Draw the player on the canvas

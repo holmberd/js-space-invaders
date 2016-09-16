@@ -11,20 +11,18 @@
     return function collision(tFrame) {
         var state = scope.state || {};
 
-        // If there are entities, iterate through them and call their `collision` methods
+        // If there are entities, iterate through them and call their 'collision' methods
         if (state.hasOwnProperty('entities')) {
             var entities = state.entities;
-            // Loop through entities
             for (var entity in entities) {
-            	if (entities[entity].collides) {
+                // For each 'bullet' entity check for collision with other active entities
+            	if (entities[entity].group === 'bullet') {
             		for (var entityOther in entities) {
-            			if (entities[entityOther].group === 'bullet' || entities[entityOther].group === 'playerbullet' ) {
-            				// Fire off each active entities `collision` method
-            				entities[entity].collision(scope, entities[entityOther]);            				
-            			}
-
+            			if (entities[entityOther].collides && entityOther !== entity) {
+            				// Fire off each active entities 'collision' method
+            				entities[entity].collision(entities[entityOther]);            				
+            			} else continue;
             		}
-   
             	}
             }
         }

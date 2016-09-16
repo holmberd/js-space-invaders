@@ -16,7 +16,7 @@ function Player(scope) {
         SPRITE_WIDTH = 45,
         SPRITE_IMAGE = null,
         PLAYER_LIVES = 3,
-        PLAYER_SPEED = 3,
+        PLAYER_VELOCITY = 3,
         PLAYER_HEALTH = 1,
         PLAYER_GROUP_NAME = 'player';
 
@@ -33,13 +33,13 @@ function Player(scope) {
         image: SPRITE_IMAGE
     };
 
-    var player = new Entity(PLAYER_GROUP_NAME, point, PLAYER_SPEED, PLAYER_HEALTH, sprite);
+    var player = new Entity(PLAYER_GROUP_NAME, point, PLAYER_VELOCITY, PLAYER_HEALTH, sprite);
     player.state.lived = PLAYER_LIVES;
 
     var inputStates = {
         moveLeft: function() {
             this.enter = function() {
-                player.state.position.x -= player.state.moveSpeed;
+                player.state.position.x -= player.state.velocity;
                 if (player.inBoundary(scope)) {
                     return this;
                 } else {
@@ -50,7 +50,7 @@ function Player(scope) {
         },
         moveRight: function() {
             this.enter = function() {
-                player.state.position.x += player.state.moveSpeed;
+                player.state.position.x += player.state.velocity;
                 if (player.inBoundary(scope)) {
                     return this;
                 } else {

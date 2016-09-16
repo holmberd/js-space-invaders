@@ -11,7 +11,7 @@ function createBullets(scope) {
     var SPRITE_HEIGHT = 8,
     SPRITE_WIDTH = 3,
     SPRITE_IMAGE = null,
-    BULLET_SPEED = 6,
+    BULLET_VELOCITY = 6,
     BULLET_HEALTH = 1,
     BULLET_GROUP_NAME = 'bullet',
     BULLET_POINT = null,
@@ -29,7 +29,7 @@ function createBullets(scope) {
     // Instantiate bullets to store as inactive entities, 
     // this prevent us from instantiating every time a bullet is fired
     for (var n = 0, bullet = {}; n < NUM_OF_BULLETS; n++) {
-        bullet = new Entity(BULLET_GROUP_NAME, BULLET_POINT, BULLET_SPEED, BULLET_HEALTH, sprite);
+        bullet = new Entity(BULLET_GROUP_NAME, BULLET_POINT, BULLET_VELOCITY, BULLET_HEALTH, sprite);
         bullet.delegate = delegateObj;
         // 'pc' property default to false as player bullet, otherwise invader(pc)
         bullet.pc = false;
@@ -54,7 +54,7 @@ Bullet.prototype.update = function bulletUpdate(scope) {
         // If bullet is in game boundary update movement, 
         // otherwise set `killed` flag and remove before next update (decoupling)
         if (this.inBoundary(scope)) {
-            this.state.position.y -= this.state.moveSpeed;
+            this.state.position.y -= this.state.velocity; // FIX: set bullet direction to be dependent on `velocity` being postive or negative
         } else {
             this.kill(); 
             return this;

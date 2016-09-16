@@ -3,7 +3,7 @@
 /** Entity Class
  * This module contains the main entity class.
  */
-function Entity(groupName, point, speed, health, sprite) {
+function Entity(groupName, point, velocity, health, sprite) {
 
     var _id = 'e' + Entity.prototype._count++;
     this.id = _id;
@@ -16,7 +16,7 @@ function Entity(groupName, point, speed, health, sprite) {
         spriteHeight = 0,
         spriteWidth = 0,
         spriteImage = null,
-        entitySpeed = speed || 0;
+        entityVelocity = velocity || 0;
         entityHealth = health || 1;
 
     if (point) {
@@ -36,7 +36,7 @@ function Entity(groupName, point, speed, health, sprite) {
             x: x,
             y: y
         },
-        moveSpeed: entitySpeed,
+        velocity: entityVelocity,
         health: entityHealth
     };
 

@@ -9,12 +9,12 @@ var Entity = require('./entity.js');
 
 function createBlocks(scope, map) {
 
-	var SPEED = 0,
+	var VELOCITY = 0,
 	HEALTH = 1,
 	SPRITE_HEIGHT = 15,
 	SPRITE_WIDTH = 15,
 	SPRITE_IMAGE = null,
-	BLOCK_GROUP_NAME = 'block';
+	GROUP_NAME = 'block';
 
 	var sprite = {
 		height: SPRITE_HEIGHT,
@@ -29,7 +29,7 @@ function createBlocks(scope, map) {
 
 	// set up all the blocks and handle them in the block object
  	for (var i = 0, block = {}; i < NUM_OF_BLOCKS; i++) {
- 		block = new Entity(BLOCK_GROUP_NAME, new Point(map[i][1], map[i][0]), SPEED, HEALTH, sprite);
+ 		block = new Entity(GROUP_NAME, new Point(map[i][1], map[i][0]), VELOCITY, HEALTH, sprite);
  		block.delegate = delegateObj;
  		scope.state.entities[block.id] = block;
  	}

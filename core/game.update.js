@@ -6,8 +6,6 @@
  * to properly render the next frame.
  */
 
- // FIX: entites that becomes active in the state during active will be updated during the current update frame instead of the next.
- // FIX: entities that are flagged for dead might be lower down on the entities list and be removed during current update frame instead of next.
 function gameUpdate(scope) {
     return function update(tFrame) {
         var state = scope.state || {};
@@ -17,12 +15,13 @@ function gameUpdate(scope) {
             var entities = state.entities;
             // Loop through entities
             for (var entity in entities) {
-                // If entity was killed on previous update, remove from active entities
+                // If `entity` was `killed` flagged skip `entity`
+                // Dead `entity`will get cleaned up in collision module
                 if (entities[entity].state.killed) {
-                    delete entities[entity];
+                    continue; // run next `entity`
                 } else {
                     // Fire off each active entities `update` method
-                    entities[entity].update(scope, tFrame);
+                    entities[entity].update(scope, tFrame);   
                 }
             }
         }

@@ -76,7 +76,7 @@ Entity.prototype.kill = function() {
         return this;
     };
 
-// Delegates to our delegate objects methods
+// Delegates to our delegate objects methods on its prototype chain
 Entity.prototype.update = function() {
     return this.delegate.update.apply(this, arguments);
 };

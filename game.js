@@ -48,12 +48,8 @@ function Game(w, h, targetFps, showFps) {
     this.state.inactiveEntities = this.state.inactiveEntities || {};
     this.state.inactiveEntities.bullets = [];
 
-    /*
     // Instantiate bullets to store as inactive entities, 
     // this prevent us from instantiating every time a bullet is fired
-    for (var i = 0; i < 100; i++) {
-        this.state.inactiveEntities.bullets.push(new Bullet(this, 0, 0));
-    */
     createBullets(this);
 
     // Instantiate blocks with map

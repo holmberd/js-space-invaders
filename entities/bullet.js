@@ -39,7 +39,7 @@ function createBullets(scope) {
 
 function Bullet() {}
 
-Bullet.prototype.render = function bulletRender(scope) { // FIX: DRY = DONT REPEAT YOURSELF, seperate delegate class for bullets, invaders and player.
+Bullet.prototype.render = function bulletRender(scope) {
     scope.context.fillStyle = '#40d870';
     scope.context.fillRect(
         this.state.position.x,
@@ -51,12 +51,13 @@ Bullet.prototype.render = function bulletRender(scope) { // FIX: DRY = DONT REPE
 
 Bullet.prototype.update = function bulletUpdate(scope) {
         var point = new Point(0, this.state.position.y);
+        // If bullet is in game boundary update movement, 
+        // otherwise set `killed` flag and remove before next update (decoupling)
         if (this.inBoundary(scope)) {
             this.state.position.y -= this.state.moveSpeed;
         } else {
             this.kill(); 
             return this;
-            //delete scope.state.entities[bullet.id]; // FIX: decouple from game state by setting flag to `killed` and handle in game update ? Removes need for including `scope` i.e. state in function.
         }
 };
 
@@ -65,22 +66,13 @@ Bullet.prototype.collision = function(entity) {
         if (!this.pc && entity.group === 'player') {
             return this;
         } else {
-        console.log('Event: Bullet has collided with something');
-        // Set bullets state to killed
-        this.kill();
-        // call collision on the entity collided with
-        entity.collision(this);
+            console.log('Event: Bullet has collided with something');
+            // Set `bullet` state to `killed`
+            this.kill();
+            // call `collision` on the `entity` collided with
+            entity.collision(this);
         }
     }
-    /*
-    if (this.hasCollidedWith(entity)) {
-        console.log('Event: block collided with bullet');
-        // Set bullets state to killed
-        this.kill();
-        // call collision on the entity collided with
-        entity.collision(this);
-        //delete scope.state.entities[entity.id];
-    } */
     return this;
 };
 

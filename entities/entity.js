@@ -63,7 +63,7 @@ Entity.prototype.inBoundary = function(scope) {
     return true;
 };
 
-// 2D collision detection based of: 
+// 2D rect collision detection based of: 
 // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
 Entity.prototype.hasCollidedWith = function(entity) {
     var rect1 = { x: this.state.position.x, y: this.state.position.y, width: this.sprite.width, height: this.sprite.height };
@@ -76,6 +76,7 @@ Entity.prototype.kill = function() {
         return this;
     };
 
+// Delegates to our delegate objects methods
 Entity.prototype.update = function() {
     return this.delegate.update.apply(this, arguments);
 };
@@ -85,7 +86,7 @@ Entity.prototype.render = function() {
 };
 
 Entity.prototype.collision = function() {
-    return this.delegate.collision.apply(this, arguments);
+    return this.delegate.collision.apply(this, arguments);  
 };
 
 module.exports = Entity;

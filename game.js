@@ -6,8 +6,8 @@ var gameCollision = require('./core/game.collision.js');
 var gameRender = require('./core/game.render.js');
 var input = require('./utils/utils.input.js');
 var Player = require('./entities/player.js');
-var Bullet = require('./entities/playerbullet.js');
 var createBlocks = require('./entities/blocks.js');
+var createBullets = require('./entities/bullet.js');
 var map = require('./conf/map.json');
 
 var container = document.querySelector('#container');
@@ -48,14 +48,16 @@ function Game(w, h, targetFps, showFps) {
     this.state.inactiveEntities = this.state.inactiveEntities || {};
     this.state.inactiveEntities.bullets = [];
 
+    /*
     // Instantiate bullets to store as inactive entities, 
     // this prevent us from instantiating every time a bullet is fired
     for (var i = 0; i < 100; i++) {
         this.state.inactiveEntities.bullets.push(new Bullet(this, 0, 0));
-    }
+    */
+    createBullets(this);
 
     // Instantiate blocks with map
-    createBlocks(this, map);
+    createBlocks(this, map.blocks);
 
     // Instantiate player 
     this.state.entities.player = new Player(this);

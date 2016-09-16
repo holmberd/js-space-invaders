@@ -79,7 +79,7 @@ function gameLoop ( scope ) {
             }
 
             // Update the game state
-            scope.update( now );
+            scope.update(now);
             // Calculate collisions in state
             scope.collision();
             // Render the next frame

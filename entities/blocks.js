@@ -50,16 +50,24 @@ Block.prototype.render = function blockRender(scope){
     return this;
 };
 
-Block.prototype.update = function blockUpdate() {
+Block.prototype.update = function blockUpdate(scope) {
 	return this;
 };
 
+Block.prototype.collision = function blockCollision(bullet) {
+	// doesn't matter what bullet it has collided with, result is the same
+	console.log('Event: Block has collided with a bullet');
+	this.kill();
+	return this;
+};
+
+/*
 Block.prototype.collision = function blockCollision(scope, entity) {
 	if (this.hasCollidedWith(entity)) {
 	    console.log('Event: block collided with bullet');
 	    delete scope.state.entities[entity.id];
 	}
 	return this;
-};
+};*/
 
 module.exports = createBlocks;

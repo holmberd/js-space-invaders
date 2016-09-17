@@ -66,7 +66,7 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 	var dimensionMarkers = {};
 	var entityIdBuffer = [];
 	var elapsed = 0;
-	var MIN_MS_FIRE = 1500;
+	var MIN_MS_FIRE = 2000;
 
 	// Get the current dimensions edge marker so that we can determine
 	// when the invaders have reached an inner/outer edge.
@@ -111,8 +111,25 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 		}, this);
 	}
 
-	function fireRandomBullet() {
-		console.log('FIRE!!!');
+	function fireRandomBullet() {		
+		// Returns a random number between min (inclusive) and max (exclusive)
+		function getRandomInt(min, max) {
+  			min = Math.ceil(min);
+  			max = Math.floor(max);
+  			return Math.floor(Math.random() * (max - min)) + min;
+		}
+
+		var randomNum = getRandomInt(0, entityIdBuffer.length);
+		var entity = entities[entityIdBuffer[randomNum]];
+		
+		// Takes one of the inactive bullet entities from our array
+        var bullet = scope.state.inactiveEntities.bullets.splice(0,1)[0];
+        bullet.state.velocity *= -1;
+        bullet.pc = true;
+        bullet.state.position.x = entity.state.position.x + (entity.sprite.width / 2) - (bullet.sprite.width / 2); 
+        bullet.state.position.y = entity.state.position.y;
+        // Place bullet in our active state of entities
+        scope.state.entities[bullet.id] = bullet;
 	}
 
 	// Loop over all entites and store each entity's `id` in a buffer array
@@ -125,11 +142,11 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 	if (!this.before) { // init to keep track of elapsed time
 		this.before = tFrame;
 	}
-	elapsed = tFrame - this.before;
+	elapsed = tFrame - this.before; // calc elapsed time
 
-	if (elapsed > MIN_MS_FIRE) {
-		fireRandomBullet();
-		this.before = null;
+	if (elapsed > MIN_MS_FIRE) { // delay and restrict rate of fire for invaders
+		fireRandomBullet(entityIdBuffer);
+		this.before = null; // reset before prop so we can fire again
 	}
 
 	dimensionMarkers = getDimensions(entityIdBuffer); // calc and store our dimension markers
@@ -142,7 +159,7 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 		} else {
 			entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // restore entity position
 			this.state.velocity += this.velocityStep; // increase velocity
-			// MIN_MS_FIRE -= 100; 
+			//MIN_MS_FIRE -= 100; 
 			this.state.velocity *= -1; // switch velocity direction, i.e. negative => postive & postive => negative
 			moveAllVertical.call(this, entityIdBuffer); // move all invaders down one row 
 		}

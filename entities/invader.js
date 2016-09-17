@@ -28,9 +28,10 @@ function createInvaders(scope, map) {
 
 	// Instantiate the wrapper for all our entities
 	var invaders = new Entity('invaders');
-	invaders.collides = false; // Wrapper for our entites will not have a collision method
-	invaders.velocityStep = INVADERS_VELOCITY_STEP;
-	invaders.state.velocity = INVADER_VELOCITY;
+	invaders.collides = false; // wrapper for our entites will not have a collision method
+	invaders.before = null; // helper property for time calc with tFrame
+	invaders.velocityStep = INVADERS_VELOCITY_STEP; // each invader's step to update each frame
+	invaders.state.velocity = INVADER_VELOCITY; // init velocity
 	invaders.sprite = {
 		height: INVADER_SPRITE_HEIGHT * 5, // 5 rows of invaders
 		width: INVADER_SPRITE_WIDTH * 12, // 12 invaders in every row
@@ -64,6 +65,8 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 	var entities = scope.state.entities;
 	var dimensionMarkers = {};
 	var entityIdBuffer = [];
+	var elapsed = 0;
+	var MIN_MS_FIRE = 1500;
 
 	// Get the current dimensions edge marker so that we can determine
 	// when the invaders have reached an inner/outer edge.
@@ -108,11 +111,25 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 		}, this);
 	}
 
+	function fireRandomBullet() {
+		console.log('FIRE!!!');
+	}
+
 	// Loop over all entites and store each entity's `id` in a buffer array
 	for (var entity in entities) {
 		if (entities[entity].group === 'invader') {
 			entityIdBuffer.push(entities[entity].id);
 		}
+	}
+
+	if (!this.before) { // init to keep track of elapsed time
+		this.before = tFrame;
+	}
+	elapsed = tFrame - this.before;
+
+	if (elapsed > MIN_MS_FIRE) {
+		fireRandomBullet();
+		this.before = null;
 	}
 
 	dimensionMarkers = getDimensions(entityIdBuffer); // calc and store our dimension markers
@@ -124,7 +141,8 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 			moveAllHorizontal.call(this, entityIdBuffer); // move all entities position horizontally
 		} else {
 			entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // restore entity position
-			this.state.velocity += this.velocityStep; // increase velocity 
+			this.state.velocity += this.velocityStep; // increase velocity
+			// MIN_MS_FIRE -= 100; 
 			this.state.velocity *= -1; // switch velocity direction, i.e. negative => postive & postive => negative
 			moveAllVertical.call(this, entityIdBuffer); // move all invaders down one row 
 		}

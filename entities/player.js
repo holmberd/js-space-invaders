@@ -10,8 +10,8 @@ var Entity = require('./entity.js');
 function Player(scope) {
 
     // set up const player globals
-    var START_POS_X = scope.constants.width / 2,
-        START_POS_Y = scope.constants.height - 50,
+    var START_POS_X = scope.constants.width / 2 - 22,
+        START_POS_Y = scope.constants.height - 45,
         SPRITE_HEIGHT = 15,
         SPRITE_WIDTH = 45,
         SPRITE_IMAGE = null,

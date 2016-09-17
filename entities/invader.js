@@ -10,6 +10,7 @@ var Entity = require('./entity.js');
 function createInvaders(scope, map) {
 
 	var INVADER_VELOCITY = 1,
+	INVADERS_VELOCITY_STEP = 0.15,
 	INVADER_HEALTH = 1,
 	INVADER_SPRITE_HEIGHT = 15,
 	INVADER_SPRITE_WIDTH = 15,
@@ -24,8 +25,8 @@ function createInvaders(scope, map) {
 	};
 
 	var invaders = new Entity('invaders');
-	invaders.grup = 'invaders';
 	invaders.collides = false; // Wrapper for our entites will not have a collision method
+	invaders.velocityStep = INVADERS_VELOCITY_STEP;
 	invaders.state.velocity = INVADER_VELOCITY;
 	invaders.sprite = {
 		height: INVADER_SPRITE_HEIGHT * 5, // 5 rows of invaders
@@ -52,15 +53,18 @@ function Invaders() {}
 Invaders.prototype.render = function() { return this; };
 Invaders.prototype.collison = function() { return this; };
 
-Invaders.prototype.update = function invadersUpdate(scope) {
+Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 	var entities = scope.state.entities;
 	var dimensionMarkers = {};
-	var iBuffer = [];
+	var entityBuffer = [];
+	var entityIdBuffer = [];
+
 
 	function getInvadersDimensions(arr) {
 		var bottom = new Dimension(0, null);
 		var right = new Dimension(0, null);
 		var left = new Dimension(999999, null);
+		//var velocityStep = this.sprite.invaderWidth;
 
 		function Dimension(num, id) {
 			this.num = num;
@@ -85,26 +89,50 @@ Invaders.prototype.update = function invadersUpdate(scope) {
 		return { bottom: bottom.id, right: right.id, left: left.id };
 	}
 
+	function moveAllVertical(arr) {
+		arr.forEach(function(id) {
+			entities[id].state.position.y += entities[id].sprite.height;
+		}, this);
+	}
+
+	function moveAllHorizontal(arr) {
+		arr.forEach(function(id) {
+			entities[id].state.position.x += this.state.velocity;
+		}, this);
+	}
+
 	for (var entity in entities) {
 		if (entities[entity].group === 'invader') {
-			iBuffer.push(entities[entity]);
+			entityBuffer.push(entities[entity]);
+			entityIdBuffer.push(entities[entity].id);
 		}
 	}
 
-	dimensionMarkers = getInvadersDimensions(iBuffer);
+	dimensionMarkers = getInvadersDimensions(entityBuffer);
 
-	/*
 	if (this.state.velocity > 0) {
 		entities[dimensionMarkers.right].state.position.x += this.state.velocity;
 		if (entities[dimensionMarkers.right].inBoundary(scope)) {
-			updateAllInvaders();
+			entities[dimensionMarkers.right].state.position.x -= this.state.velocity;
+			moveAllHorizontal.call(this, entityIdBuffer);
 		} else {
 			entities[dimensionMarkers.right].state.position.x -= this.state.velocity;
+			this.state.velocity += this.velocityStep; // increase velocity 
+			this.state.velocity *= -1; // switch velocity direction, i.e. negative => postive & postive => negative
+			moveAllVertical.call(this, entityIdBuffer); // move all invaders down one row 
 		}
 	} else {
-		point = new Point(--this.state.position.x, this.state.position.y);
+		entities[dimensionMarkers.left].state.position.x -= this.state.velocity;
+		if (entities[dimensionMarkers.left].inBoundary(scope)) {
+			entities[dimensionMarkers.left].state.position.x += this.state.velocity;
+			moveAllHorizontal.call(this, entityIdBuffer);
+		} else {
+			entities[dimensionMarkers.left].state.position.x += this.state.velocity;
+			this.state.velocity -= this.velocityStep; // increase velocity 
+			this.state.velocity *= -1; // switch velocity direction, i.e. negative => postive & postive => negative
+			moveAllVertical.call(this, entityIdBuffer); // move all invaders down one row 
+		}
 	}
-	*/
 
 };
 
@@ -133,46 +161,5 @@ Invader.prototype.collision = function invaderCollision(bullet) {
 	this.kill();
 	return this;
 };
-
-/*
-// delegate state object constructor for our invaders,
-// allows group entities to share render/update/collison functions
-// over the delegate objects prototype chain. 
-function Invader() {}
-
-Invader.prototype.render = function invaderRender(scope){
-	scope.context.fillStyle = '#40d870';
-    scope.context.fillRect(
-        this.state.position.x,
-        this.state.position.y,
-        this.sprite.width, this.sprite.height
-    );
-    return this;
-};
-
-Invader.prototype.atEdge = function invadersAtEdge(scope) {
-	var entities = scope.state.entities;
-	var point = {};
-	
-};
-
-Invader.prototype.update = function invaderUpdate(scope) {
-	var point = {};
-	//this.velocity.x *= -1; // negative => postive & postive => negative
-	//var point = new Point(this.state.position.x + 1)
-	if (this.state.velocity > 0) {
-		point = new Point(++this.state.position.x, this.state.position.y);
-	} else {
-		point = new Point(--this.state.position.x, this.state.position.y);
-	}
-};
-
-Invader.prototype.collision = function invaderCollision(bullet) {
-	// doesn't matter which bullet it has collided with, result is the same
-	console.log('Event: Invader has collided with a bullet');
-	this.kill();
-	return this;
-};
-*/
 
 module.exports = createInvaders;

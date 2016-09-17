@@ -1,11 +1,12 @@
 // /js/game.js
-var cUtils = require('./utils/utils.canvas.js');
+var generateCanvas = require('./utils/utils.canvas.js');
 var gameLoop = require('./core/game.loop.js');
 var gameUpdate = require('./core/game.update.js');
 var gameCollision = require('./core/game.collision.js');
 var gameRender = require('./core/game.render.js');
 var input = require('./utils/utils.input.js');
 var Player = require('./entities/player.js');
+var createInvaders = require('./entities/invader.js');
 var createBlocks = require('./entities/blocks.js');
 var createBullets = require('./entities/bullet.js');
 var map = require('./conf/map.json');
@@ -26,7 +27,7 @@ function Game(w, h, targetFps, showFps) {
     // Instantiate an empty state object
     this.state = {};
 
-    this.viewport = cUtils.generateCanvas(w, h);
+    this.viewport = generateCanvas(w, h);
     this.viewport.id = "gameViewport";
 
     // Get and store the canvas context as a global
@@ -51,6 +52,8 @@ function Game(w, h, targetFps, showFps) {
     // Instantiate bullets to store as inactive entities, 
     // this prevent us from instantiating every time a bullet is fired
     createBullets(this);
+
+    createInvaders(this, map.invaders);
 
     // Instantiate blocks with map
     createBlocks(this, map.blocks);

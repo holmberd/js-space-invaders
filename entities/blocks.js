@@ -22,14 +22,14 @@ function createBlocks(scope, map) {
 		image: SPRITE_IMAGE
 	};
 
- 	var NUM_OF_BLOCKS = 1; //24,
+ 	var NUM_OF_BLOCKS = 24; //24,
 
 	// instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
 	var delegateObj = new Block();
 
 	// set up all the blocks and handle them in the block object
  	for (var i = 0, block = {}; i < NUM_OF_BLOCKS; i++) {
- 		block = new Entity(GROUP_NAME, new Point(map[i][1], map[i][0]), VELOCITY, HEALTH, sprite);
+ 		block = new Entity(GROUP_NAME, new Point(map[i][0], map[i][1]), VELOCITY, HEALTH, sprite);
  		block.delegate = delegateObj;
  		scope.state.entities[block.id] = block;
  	}

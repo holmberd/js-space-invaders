@@ -16,7 +16,7 @@ function gameRender(scope) {
         // Clear out the canvas
         scope.context.clearRect(0, 0, w, h);
 
-        scope.context.font = '32px Courier';
+        scope.context.font = '26px Courier';
 
         // Draw bottom score board diviver
         scope.context.beginPath();
@@ -27,7 +27,7 @@ function gameRender(scope) {
         // If we want to show the FPS, then render it in the top right corner.
         if (scope.constants.showFps) {
             scope.context.fillStyle = '#ff0';
-            scope.context.fillText(~~scope.loop.fps, w - 100, 50);
+            scope.context.fillText(~~scope.loop.fps, w - 50, 30);
         }
 
         // If there are entities, iterate through them and call their `render` methods

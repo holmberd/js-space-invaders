@@ -18,6 +18,12 @@ function gameRender(scope) {
 
         scope.context.font = '32px Courier';
 
+        // Draw bottom score board diviver
+        scope.context.beginPath();
+        scope.context.moveTo(0, 435);
+        scope.context.lineTo(360, 435);
+        scope.context.stroke();
+
         // If we want to show the FPS, then render it in the top right corner.
         if (scope.constants.showFps) {
             scope.context.fillStyle = '#ff0';

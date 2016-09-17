@@ -11,7 +11,7 @@ function createBullets(scope) {
     var SPRITE_HEIGHT = 8,
     SPRITE_WIDTH = 3,
     SPRITE_IMAGE = null,
-    BULLET_VELOCITY = 6,
+    BULLET_VELOCITY = -6,
     BULLET_HEALTH = 1,
     BULLET_GROUP_NAME = 'bullet',
     BULLET_POINT = null,
@@ -54,7 +54,7 @@ Bullet.prototype.update = function bulletUpdate(scope) {
         // If bullet is in game boundary update movement, 
         // otherwise set `killed` flag and remove before next update (decoupling)
         if (this.inBoundary(scope)) {
-            this.state.position.y -= this.state.velocity; // FIX: set bullet direction to be dependent on `velocity` being postive or negative
+            this.state.position.y += this.state.velocity; // bullet direction is velocity dependent pos/neg
         } else {
             this.kill(); 
             return this;
@@ -64,6 +64,8 @@ Bullet.prototype.update = function bulletUpdate(scope) {
 Bullet.prototype.collision = function(entity) {
     if (this.hasCollidedWith(entity)) {
         if (!this.pc && entity.group === 'player') {
+            return this;
+        } else if (this.pc && entity.group === 'invader') {
             return this;
         } else {
             console.log('Event: Bullet has collided with something');

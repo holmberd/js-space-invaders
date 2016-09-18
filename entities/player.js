@@ -20,9 +20,14 @@ function Player(scope) {
         PLAYER_HEALTH = 1,
         PLAYER_GROUP_NAME = 'player';
 
+    // set up global for 'limbo' timing
+    var elapsedDead = null,
+        beforeDead = null,
+        MIN_MS_DEAD = 1000;    
+
     // set up globals for firing timing
-    var elapsed = null,
-        before = null,
+    var elapsedFireRate = null,
+        beforeFireRate = null,
         MIN_MS_FIRE = 500;
 
 
@@ -34,7 +39,8 @@ function Player(scope) {
     };
 
     var player = new Entity(PLAYER_GROUP_NAME, point, PLAYER_VELOCITY, PLAYER_HEALTH, sprite);
-    player.state.lived = PLAYER_LIVES;
+    player.state.lives = PLAYER_LIVES;
+    player.state.died = false;
 
     var inputStates = {
         moveLeft: function() {
@@ -69,7 +75,7 @@ function Player(scope) {
                 scope.state.entities[bullet.id] = bullet;
             };
             // set `now` property on shoot-event so we can put a delay and restrict rate of fire
-            this.before = tFrame;
+            this.beforeFireRate = tFrame;
         }
     };
 
@@ -87,19 +93,32 @@ function Player(scope) {
             fireState.enter();
         }
 
+        if (player.state.died) {
+            if (!beforeDead) {
+                beforeDead = tFrame;
+            } else {
+                elapsedDead = tFrame - beforeDead;
+                if (elapsedDead > MIN_MS_DEAD) {
+                    beforeDead = null;
+                    player.state.died = false;
+                }
+            }    
+        }
+        
+
         function fireInputHandler(tFrame) {
             // handles firing input
             if (input.isDown(input.SPACE)) {
                 var shoot = null;
-                if (!before) {
+                if (!beforeFireRate) {
                     shoot = new inputStates.shoot(tFrame);
-                    before = tFrame;
+                    beforeFireRate = tFrame;
                     return shoot;
                 } else {
-                    elapsed = tFrame - before;
-                    // if elapsed time is bigger than minimum allowed, we can fire again
-                    if (elapsed > MIN_MS_FIRE) {
-                        before = null;
+                    elapsedFireRate = tFrame - beforeFireRate;
+                    // if elapsedFireRate time is bigger than minimum allowed, we can fire again
+                    if (elapsedFireRate > MIN_MS_FIRE) {
+                        beforeFireRate = null;
                         return shoot;
                     } 
                 }
@@ -117,8 +136,14 @@ function Player(scope) {
     };
 
     player.collision = function playerCollision(bullet) {
-        if (bullet.pc) {
+        // bullet must come from an invader and 
+        // player can't be in 'limbo' state
+        if (bullet.pc && !player.state.died) {
             player.state.lives--;
+            if (player.state.lives === 0) {
+                console.log(game);
+            }
+            player.state.died = true;
             console.log('Event: player lost one life');
         }
         return this;
@@ -126,12 +151,16 @@ function Player(scope) {
 
     // Draw the player on the canvas
     player.render = function playerRender() {
+        if (player.state.died) {
+            scope.context.globalAlpha = 0.5;
+        }
         scope.context.fillStyle = '#40d870';
         scope.context.fillRect(
             player.state.position.x,
             player.state.position.y,
             sprite.width, sprite.height
         );
+        scope.context.globalAlpha = 1;
     };
 
     return player;

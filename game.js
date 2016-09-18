@@ -35,8 +35,6 @@ function Game(w, h, targetFps, showFps) {
 
     // Append the canvas node to our container
     container.appendChild(this.viewport);
-    // $container.insertBefore(this.viewport, container.firstChild);
-
 
     // Instantiate core modules with the current scope
     this.update = gameUpdate(this);

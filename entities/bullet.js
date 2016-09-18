@@ -1,7 +1,5 @@
 // /js/entities/Bullet.js
 
-// TODO: Bullets collision with bullets will cause a infinite collision method loop
-
 var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
@@ -65,16 +63,14 @@ Bullet.prototype.update = function bulletUpdate(scope) {
 
 Bullet.prototype.collision = function(entity) {
     if (this.hasCollidedWith(entity)) {
-        if (!this.pc && entity.group === 'player') {
+        if (!this.pc && entity.group === 'player') { // checks that player's bullet can't collide with player
             return this;
-        } else if (this.pc && entity.group === 'invader') {
+        } else if (this.pc && entity.group === 'invader') { // checks that invader's bullet can't collide with invader
             return this;
-        } else {
+        } else if (entity.group !== 'bullet') { // bullets can't collide with bullets
             console.log('Event: Bullet has collided with something');
-            // Set `bullet` state to `killed`
-            this.kill();
-            // call `collision` on the `entity` collided with
-            entity.collision(this);
+            this.kill(); // Set `bullet` state to `killed`
+            entity.collision(this); // call `collision` on the `entity` collided with
         }
     }
     return this;

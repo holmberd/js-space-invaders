@@ -1,5 +1,7 @@
 // /js/entities/Bullet.js
 
+// TODO: Bullets collision with bullets will cause a infinite collision method loop
+
 var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 

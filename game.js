@@ -1,4 +1,7 @@
 // /js/game.js
+
+// TODO: Need to be able to stop and start game from menu, and option to play again after player has died. 
+
 var generateCanvas = require('./utils/utils.canvas.js');
 var gameLoop = require('./core/game.loop.js');
 var gameUpdate = require('./core/game.update.js');

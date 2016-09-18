@@ -118,18 +118,17 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
   			max = Math.floor(max);
   			return Math.floor(Math.random() * (max - min)) + min;
 		}
-
 		var randomNum = getRandomInt(0, entityIdBuffer.length);
-		var entity = entities[entityIdBuffer[randomNum]];
+		var entity = entities[entityIdBuffer[randomNum]]; // returns a random entity from our buffer id array
 		
 		// Takes one of the inactive bullet entities from our array
+		// and set its position to the random selected entity
         var bullet = scope.state.inactiveEntities.bullets.splice(0,1)[0];
-        bullet.state.velocity *= -1;
-        bullet.pc = true;
+        bullet.state.velocity *= -1; // switch bullet direction
+        bullet.pc = true;	// set bullet to `pc`
         bullet.state.position.x = entity.state.position.x + (entity.sprite.width / 2) - (bullet.sprite.width / 2); 
         bullet.state.position.y = entity.state.position.y;
-        // Place bullet in our active state of entities
-        scope.state.entities[bullet.id] = bullet;
+        scope.state.entities[bullet.id] = bullet;  // Place bullet in our active state of entities
 	}
 
 	// Loop over all entites and store each entity's `id` in a buffer array
@@ -141,12 +140,12 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 
 	if (!this.before) { // init to keep track of elapsed time
 		this.before = tFrame;
-	}
-	elapsed = tFrame - this.before; // calc elapsed time
-
-	if (elapsed > MIN_MS_FIRE) { // delay and restrict rate of fire for invaders
-		fireRandomBullet(entityIdBuffer);
-		this.before = null; // reset before prop so we can fire again
+	} else {
+		elapsed = tFrame - this.before; // calc elapsed time
+		if (elapsed > MIN_MS_FIRE) { // delay and restrict rate of fire for invaders
+			fireRandomBullet(entityIdBuffer);
+			this.before = null; // reset before prop so we can fire again
+		}
 	}
 
 	dimensionMarkers = getDimensions(entityIdBuffer); // calc and store our dimension markers

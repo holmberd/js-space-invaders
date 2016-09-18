@@ -6,7 +6,7 @@
  * (using the updated state) at the configured FPS.
  */
 function gameLoop ( scope ) {
-    var loop = this;
+    var loop = {};
 
     // Initialize timer variables so we can calculate FPS
     var fps = scope.constants.targetFps, // Our target fps

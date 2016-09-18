@@ -34,7 +34,6 @@ function gameLoop ( scope ) {
 
 
     // Main game rendering loop
-
     loop.main = function mainLoop( tframe ) {
         // Request a new Animation Frame
         // setting to `stopLoop` so animation can be stopped via

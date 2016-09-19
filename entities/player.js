@@ -82,29 +82,6 @@ function Player(scope) {
     // Fired via the global update method.
     // Mutates state as needed for proper rendering next state
     player.update = function playerUpdate(scope, tFrame) {
-        // Check if keys are pressed, if so, update the players position.
-        var moveState = moveInputHandler();
-        if (moveState) {
-            moveState.enter();
-        }
-
-        var fireState = fireInputHandler(tFrame);
-        if (fireState) {
-            fireState.enter();
-        }
-
-        if (player.state.died) {
-            if (!beforeDead) {
-                beforeDead = tFrame;
-            } else {
-                elapsedDead = tFrame - beforeDead;
-                if (elapsedDead > MIN_MS_DEAD) {
-                    beforeDead = null;
-                    player.state.died = false;
-                }
-            }    
-        }
-        
 
         function fireInputHandler(tFrame) {
             // handles firing input
@@ -133,23 +110,52 @@ function Player(scope) {
                 return new inputStates.moveRight();
             } return null;
         }
+
+        // Check if keys are pressed, if so, update the players position.
+        var moveState = moveInputHandler();
+        if (moveState) {
+            moveState.enter();
+        }
+
+        var fireState = fireInputHandler(tFrame);
+        if (fireState) {
+            fireState.enter();
+        }
+
+        if (player.state.died) {
+            if (!beforeDead) {
+                beforeDead = tFrame;
+            } else {
+                elapsedDead = tFrame - beforeDead;
+                if (elapsedDead > MIN_MS_DEAD) {
+                    beforeDead = null;
+                    player.state.died = false;
+                }
+            }    
+        }
+        
     };
 
-    player.collision = function playerCollision(bullet) {
-        // bullet must come from an invader and 
-        // player can't be in 'limbo' state
-        if (bullet.pc && !player.state.died) {
+    player.collision = function playerCollision(entity) {
+
+        // If `entity` is a bullet then bullet must come from an `invader` 
+        // and `player` can't be in 'limbo' state
+        if (entity.group === 'bullet' && entity.pc && !player.state.died) {
             player.state.lives--;
             if (player.state.lives === 0) {
-                console.log(game);
+                game.state.lost = true;
+                return this;
             }
             player.state.died = true;
             console.log('Event: player lost one life');
+            return this;
+        } else if (entity.group === 'invader') { // If `entity` is a `invader`, game is lost
+            game.state.lost = true;
         }
         return this;
     };
 
-    // Draw the player on the canvas
+    // Draw the `player` on the canvas
     player.render = function playerRender() {
         if (player.state.died) {
             scope.context.globalAlpha = 0.5;

@@ -138,6 +138,10 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 		}
 	}
 
+	if (entityIdBuffer.length === 0 && !game.state.lost) {
+		game.state.win = true;
+	}
+
 	if (!this.before) { // init to keep track of elapsed time
 		this.before = tFrame;
 	} else {
@@ -197,10 +201,16 @@ Invader.prototype.update = function invaderUpdate(scope) {
 	return this;
 };
 
-Invader.prototype.collision = function invaderCollision(bullet) {
-	// doesn't matter which bullet it has collided with, result is the same
-	console.log('Event: Invader has collided with a bullet');
-	this.kill();
+Invader.prototype.collision = function invaderCollision(entity, scope) {
+
+	if (entity.group === 'bullet' && !entity.pc) {
+		console.log('Event: Invader has collided with a bullet');
+		this.kill();
+		return this;
+	} else if (entity.group === 'block') {
+		entity.kill();
+		return this;
+	} 
 	return this;
 };
 

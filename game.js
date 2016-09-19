@@ -29,6 +29,8 @@ function Game(w, h, targetFps, showFps) {
 
     // Instantiate an empty state object
     this.state = {};
+    this.state.win = false;
+    this.state.lost = false;
 
     this.viewport = generateCanvas(w, h);
     this.viewport.id = "gameViewport";
@@ -51,7 +53,7 @@ function Game(w, h, targetFps, showFps) {
     this.state.inactiveEntities.bullets = [];
 
     // Instantiate bullets to store as inactive entities, 
-    // this prevent us from instantiating every time a bullet is fired
+    // this prevent us from having to do unecessary calc every time a bullet is fired.
     createBullets(this);
 
     createInvaders(this, map.invaders);

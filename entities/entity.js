@@ -4,9 +4,8 @@
  * This module contains the main entity class.
  */
 function Entity(groupName, point, velocity, health, sprite) {
-
-    var _id = 'e' + Entity.prototype._count++;
-    this.id = _id;
+    
+    Object.defineProperty( this, 'id', { value: Entity.prototype.count++ } );
     this.group = groupName;
     this.collides = true;
     this.delegate = {};
@@ -51,7 +50,7 @@ function Entity(groupName, point, velocity, health, sprite) {
 
 //Entity.prototype.constructor = Entity;
 
-Entity.prototype._count = 0;
+Entity.prototype.count = 0;
 
 Entity.prototype.inBoundary = function(scope) {
     var maxHeight = scope.constants.height - this.sprite.height,

@@ -54,10 +54,11 @@ Block.prototype.update = function blockUpdate(scope) {
 	return this;
 };
 
-Block.prototype.collision = function blockCollision(bullet) {
-	// doesn't matter which bullet it has collided with, result is the same
-	console.log('Event: Block has collided with a bullet');
-	this.kill();
+Block.prototype.collision = function blockCollision(entity) {
+	if (entity.group === 'bullet') { // doesn't matter which bullet it has collided with, result is the same
+		console.log('Event: Block has collided with a bullet');
+		this.kill();
+	}
 	return this;
 };
 

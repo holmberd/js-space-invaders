@@ -12,34 +12,39 @@
         var state = scope.state || {};
 
         // Cleans up entities that are `killed` flagged
-        function deadCleanUp(entities) {
+        function cleanUpDeadEntities(entities) {
             for (var entity in entities) {
                 if (entities[entity].state.killed) {
                     delete state.entities[entity];
-                } else {
-                    continue;
                 }
             }
             return;
         }
 
-        // If there are entities, iterate through them and call their `collision` methods
+        // If there are entities, iterate through them and if they two have collided
+        // then call their `collision` method.
         if (state.hasOwnProperty('entities')) {
             var entities = state.entities;
             for (var entity in entities) {
-                // If `killed` flag set, skip entity collision check
-                if (entities[entity].state.killed) {
+
+                // If entity is `killed` or doesn't collide, skip entity collision check
+                if (entities[entity].state.killed || !entities[entity].collides)  {
                     continue;
-                } else if (entities[entity].group === 'bullet') { // For each `bullet` entity check for collision with other active entities
-            		for (var entityOther in entities) { 
-            			if (entities[entityOther].collides && entityOther !== entity && !entities[entityOther].state.killed) {
-            				// Fire off each active entities `collision` method
+                }
+                for (var entityOther in entities) { 
+
+                    // If `entity` can collide, and is not colliding with itself, and is not `killed` flagged,
+                    // and both entites are not of the same group.
+                    if (entities[entityOther].collides && entityOther !== entity && !entities[entityOther].state.killed && entities[entity].group !== entities[entityOther].group) {
+                        if (entities[entity].hasCollidedWith(entities[entityOther])) {
+                            // Fire off each active entities `collision` method
                             entities[entity].collision(entities[entityOther]);
-            			} else continue;
-            		}
-            	}
+                            entities[entityOther].collision(entities[entity]);
+                        }
+        			}
+        		}
             }
-            deadCleanUp(entities);
+            cleanUpDeadEntities(entities);
         }
 
         return state;

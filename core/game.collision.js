@@ -21,7 +21,7 @@
             return;
         }
 
-        // If there are entities, iterate through them and if they two have collided
+        // If there are entities, iterate through them and if two have collided
         // then call their `collision` method.
         if (state.hasOwnProperty('entities')) {
             var entities = state.entities;
@@ -35,11 +35,12 @@
 
                     // If `entity` can collide, and is not colliding with itself, and is not `killed` flagged,
                     // and both entites are not of the same group.
-                    if (entities[entityOther].collides && entityOther !== entity && !entities[entityOther].state.killed && entities[entity].group !== entities[entityOther].group) {
+                    if (entities[entityOther].collides && entityOther !== entity && !entities[entityOther].state.killed && !entities[entity].state.killed  && entities[entity].group !== entities[entityOther].group) {
                         if (entities[entity].hasCollidedWith(entities[entityOther])) {
                             // Fire off each active entities `collision` method
                             entities[entity].collision(entities[entityOther]);
                             entities[entityOther].collision(entities[entity]);
+                            break;
                         }
         			}
         		}

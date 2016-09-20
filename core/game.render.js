@@ -15,14 +15,18 @@ function gameRender(scope) {
     return function render() {
         // Clear out the canvas
         scope.context.clearRect(0, 0, w, h);
-
         scope.context.font = '26px Courier';
 
-        // Draw bottom score board diviver
-        scope.context.beginPath();
-        scope.context.moveTo(0, 435);
-        scope.context.lineTo(360, 435);
-        scope.context.stroke();
+        if (scope.state.start) {
+            // Draw bottom score board diviver
+            scope.context.beginPath();
+            scope.context.moveTo(0, 435);
+            scope.context.lineTo(360, 435);
+            scope.context.fillStyle = "#000";
+            scope.context.lineWidth = 2;
+            scope.context.stroke();
+            scope.context.lineWidth = 1;
+        }
 
         // If we want to show the FPS, then render it in the top right corner.
         if (scope.constants.showFps) {

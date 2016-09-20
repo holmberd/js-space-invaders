@@ -68,7 +68,7 @@ function Player(scope) {
         shoot: function(tFrame) {
             this.enter = function() {
                 // Takes one of the inactive bullet entities from our array
-                var bullet = scope.state.inactiveEntities.bullets.splice(0,1)[0];
+                var bullet = scope.state.inactiveEntities.bullets.pop();
                 bullet.state.position.x = player.state.position.x + (player.sprite.width / 2) - (bullet.sprite.width / 2);
                 bullet.state.position.y = player.state.position.y;
                 // Place bullet in our active state of entities
@@ -143,6 +143,7 @@ function Player(scope) {
         if (entity.group === 'bullet' && entity.pc && !player.state.died) {
             player.state.lives--;
             if (player.state.lives === 0) {
+                console.log('player is dead');
                 game.state.lost = true;
                 return this;
             }

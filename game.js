@@ -13,6 +13,7 @@ var Player = require('./entities/player.js');
 var createInvaders = require('./entities/invader.js');
 var createBlocks = require('./entities/blocks.js');
 var createBullets = require('./entities/bullet.js');
+var loadSprites = require('./utils/utils.sprites.js');
 var map = require('./conf/map.json');
 
 var container = document.querySelector('#container');
@@ -20,8 +21,13 @@ var container = document.querySelector('#container');
 // Create base game class
 function Game(w, h, targetFps, showFps) {
 
+    this.img = document.getElementById("invader");
+    this.blockImg = document.getElementById("block");
+
+    this.sprites = loadSprites();
     // Setup some constants
     this.constants = {
+        offset: 25,
         width: w,
         height: h,
         targetFps: targetFps,

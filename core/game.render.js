@@ -10,7 +10,8 @@
 function gameRender(scope) {
     // Setup globals
     var w = scope.constants.width,
-        h = scope.constants.height;
+        h = scope.constants.height,
+        offset = scope.constants.offset;
 
     return function render() {
         // Clear out the canvas
@@ -19,11 +20,11 @@ function gameRender(scope) {
 
         if (scope.state.start) {
             // Draw bottom score board diviver
+            scope.context.strokeStyle = '#40d870';
             scope.context.beginPath();
-            scope.context.moveTo(0, 435);
-            scope.context.lineTo(360, 435);
-            scope.context.fillStyle = "#000";
-            scope.context.lineWidth = 2;
+            scope.context.moveTo(0, h - (offset - 5));
+            scope.context.lineTo(w, h - (offset - 5));
+            scope.context.lineWidth = 1;
             scope.context.stroke();
             scope.context.lineWidth = 1;
         }

@@ -61,23 +61,6 @@ function Game(w, h, targetFps, showFps) {
 
     this.state.entities.menu = new Menu();
 
-
-
-    /*
-    // Instantiate bullets to store as inactive entities, 
-    // this prevent us from having to do unecessary calc every time a bullet is fired.
-    createBullets(this);
-
-    // Instantiate invaders with map positions
-    createInvaders(this, map.invaders);
-
-    // Instantiate blocks with map positions
-    createBlocks(this, map.blocks);
-
-    // Instantiate player 
-    this.state.entities.player = new Player(this);
-    */
-
     return this;
 }
 

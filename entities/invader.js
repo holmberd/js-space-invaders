@@ -8,16 +8,25 @@ var Entity = require('./entity.js');
  * that acts to delegate our prototype methods to all invaders.
  */
 
+ // TODO: When invaders reach bottom and doesn't collide with player, player should still lose.
+
 function createInvaders(scope, map) {
 
 	var INVADER_VELOCITY = 1,
-	INVADERS_VELOCITY_STEP = 0.15,
+	INVADERS_VELOCITY_STEP = 0.02,
 	INVADER_HEALTH = 1,
-	INVADER_SPRITE_HEIGHT = 15,
-	INVADER_SPRITE_WIDTH = 15,
+	INVADER_SPRITE_HEIGHT = 18,
+	INVADER_SPRITE_WIDTH = 18,
 	INVADER_SPRITE_IMAGE = null,
 	INVADER_GROUP_NAME = 'invader',
-	NUM_OF_INVADERS =  60; // (5 * 12)
+	NUM_OF_INVADERS =  60; // (5 rows * 12 cols)
+
+	var invaderImages = [
+		scope.sprites['invader-1'], 
+		scope.sprites['invader-2'], 
+		scope.sprites['invader-3'], 
+		scope.sprites['invader-4'], 
+		scope.sprites['invader-5']];
 
 	var invaderSprite = {
 		height: INVADER_SPRITE_HEIGHT,
@@ -44,6 +53,11 @@ function createInvaders(scope, map) {
 
 	// Instantiate all the invaders and set them as active entities in the game state
  	for (var i = 0, invader = {}; i < NUM_OF_INVADERS; i++) {
+ 		if (i <= 11) invaderSprite.image = invaderImages[0];
+ 		if (i > 11 && i <= 23) invaderSprite.image = invaderImages[1];
+ 		if (i > 23 && i <= 35) invaderSprite.image = invaderImages[2];
+ 		if (i > 35 && i <= 47) invaderSprite.image = invaderImages[3];
+ 		if (i > 47) invaderSprite.image = invaderImages[4];
  		invader = new Entity(INVADER_GROUP_NAME, new Point(map[i][0], map[i][1]), INVADER_VELOCITY, INVADER_HEALTH, invaderSprite);
  		invader.delegate = delegateObj;
  		scope.state.entities[invader.id] = invader;
@@ -192,9 +206,9 @@ function Invader() {}
 
 Invader.prototype.render = function invaderRender(scope) {
 	scope.context.drawImage(
-		scope.img,
+		this.sprite.image,
 		this.state.position.x,
-		this.state.position.y, 14, 14);
+		this.state.position.y, this.sprite.width, this.sprite.height);
 	/*
 	scope.context.fillStyle = '#40d870';
     scope.context.fillRect(

@@ -23,6 +23,7 @@ function Entity(groupName, point, velocity, health, sprite) {
         y = point.y;
     }
     if (sprite) {
+        spriteColor = sprite.color;
         spriteHeight = sprite.height;
         spriteWidth = sprite.width;
         spriteImage = sprite.image;
@@ -40,6 +41,7 @@ function Entity(groupName, point, velocity, health, sprite) {
     };
 
     this.sprite = {
+        color: spriteColor,
         height: spriteHeight,
         width: spriteWidth,
         image: spriteImage
@@ -53,7 +55,7 @@ function Entity(groupName, point, velocity, health, sprite) {
 Entity.prototype.count = 0;
 
 Entity.prototype.inBoundary = function(scope) {
-    var maxHeight = scope.constants.height - this.sprite.height,
+    var maxHeight = scope.constants.height - this.sprite.height - scope.constants.offset,
         maxWidth = scope.constants.width - this.sprite.width,
         x = this.state.position.x,
         y = this.state.position.y;

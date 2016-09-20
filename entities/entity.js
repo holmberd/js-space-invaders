@@ -88,4 +88,8 @@ Entity.prototype.collision = function() {
     return this.delegate.collision.apply(this, arguments);  
 };
 
+Entity.prototype.reset = function() {
+    return this.delegate.reset.apply(this, arguments);
+};
+
 module.exports = Entity;

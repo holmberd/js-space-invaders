@@ -122,7 +122,7 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 		
 		// Takes one of the inactive bullet entities from our array
 		// and set its position to the random selected entity
-        var bullet = scope.state.inactiveEntities.bullets.splice(0,1)[0];
+        var bullet = scope.state.inactiveEntities.bullets.pop();
         bullet.state.velocity *= -1; // switch bullet direction
         bullet.pc = true;	// set bullet to `pc`
         bullet.state.position.x = entity.state.position.x + (entity.sprite.width / 2) - (bullet.sprite.width / 2); 

@@ -4,11 +4,12 @@ var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
 /** Invader Module
- * Main invader module
+ * Main invader module creates our invader entities and the wrapper entity
+ * that acts to delegate our prototype methods to all invaders.
  */
 
-// Creates our invader entities and the wrapper entity
-// that acts to delegate our prototype methods to all invaders.
+ // TODO: dimesion marker doesn't work when only one entity is left, needs fixing
+
 function createInvaders(scope, map) {
 
 	var INVADER_VELOCITY = 1,
@@ -18,7 +19,7 @@ function createInvaders(scope, map) {
 	INVADER_SPRITE_WIDTH = 15,
 	INVADER_SPRITE_IMAGE = null,
 	INVADER_GROUP_NAME = 'invader',
-	NUM_OF_INVADERS =  60; // (5 * 12)
+	NUM_OF_INVADERS =  1;//60; // (5 * 12)
 
 	var invaderSprite = {
 		height: INVADER_SPRITE_HEIGHT,
@@ -138,52 +139,52 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 		}
 	}
 
+	// If there are not invaders left and `player` hasn't alredy lost
+	// then game is set to `win`, otherwise continue updating
 	if (entityIdBuffer.length === 0 && !game.state.lost) {
 		game.state.win = true;
-	}
-
-	if (!this.before) { // init to keep track of elapsed time
-		this.before = tFrame;
 	} else {
-		elapsed = tFrame - this.before; // calc elapsed time
-		if (elapsed > MIN_MS_FIRE) { // delay and restrict rate of fire for invaders
-			fireRandomBullet(entityIdBuffer);
-			this.before = null; // reset before prop so we can fire again
+		if (!this.before) { // init to keep track of elapsed time to restrict fire rate
+			this.before = tFrame;
+		} else {
+			elapsed = tFrame - this.before; // calc elapsed time
+			if (elapsed > MIN_MS_FIRE) { // delay and restrict rate of fire for invaders
+				fireRandomBullet(entityIdBuffer);
+				this.before = null; // reset before prop so we can fire again
+			}
+		}
+
+		dimensionMarkers = getDimensions(entityIdBuffer); // calc and store our dimension markers
+
+		if (this.state.velocity > 0) { // if velocity is a positive number -> invaders are moving right 
+			entities[dimensionMarkers.right].state.position.x += this.state.velocity; // increase position of the entity furthest right
+			if (entities[dimensionMarkers.right].inBoundary(scope)) { // if that entity is still in game boundaries
+				entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // restore entity position before updating all
+				moveAllHorizontal.call(this, entityIdBuffer); // move all entities position horizontally
+			} else {
+				entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // restore entity position
+				this.state.velocity += this.velocityStep; // increase velocity
+				//MIN_MS_FIRE -= 100; 
+				this.state.velocity *= -1; // switch velocity direction, i.e. negative => postive & postive => negative
+				moveAllVertical.call(this, entityIdBuffer); // move all invaders down one row 
+			}
+		} else { // else velocity is a negative number -> invaders are moving left
+			entities[dimensionMarkers.left].state.position.x += this.state.velocity;
+			if (entities[dimensionMarkers.left].inBoundary(scope)) {
+				entities[dimensionMarkers.left].state.position.x -= this.state.velocity;
+				moveAllHorizontal.call(this, entityIdBuffer);
+			} else {
+				entities[dimensionMarkers.left].state.position.x -= this.state.velocity;
+				this.state.velocity += this.velocityStep;  
+				this.state.velocity *= -1;
+				moveAllVertical.call(this, entityIdBuffer);
+			}
 		}
 	}
-
-	dimensionMarkers = getDimensions(entityIdBuffer); // calc and store our dimension markers
-
-	if (this.state.velocity > 0) { // if velocity is a positive number -> invaders are moving right 
-		entities[dimensionMarkers.right].state.position.x += this.state.velocity; // increase position of the entity furthest right
-		if (entities[dimensionMarkers.right].inBoundary(scope)) { // if that entity is still in game boundaries
-			entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // restore entity position before updating all
-			moveAllHorizontal.call(this, entityIdBuffer); // move all entities position horizontally
-		} else {
-			entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // restore entity position
-			this.state.velocity += this.velocityStep; // increase velocity
-			//MIN_MS_FIRE -= 100; 
-			this.state.velocity *= -1; // switch velocity direction, i.e. negative => postive & postive => negative
-			moveAllVertical.call(this, entityIdBuffer); // move all invaders down one row 
-		}
-	} else { // else velocity is a negative number -> invaders are moving left
-		entities[dimensionMarkers.left].state.position.x -= this.state.velocity;
-		if (entities[dimensionMarkers.left].inBoundary(scope)) {
-			entities[dimensionMarkers.left].state.position.x += this.state.velocity;
-			moveAllHorizontal.call(this, entityIdBuffer);
-		} else {
-			entities[dimensionMarkers.left].state.position.x += this.state.velocity;
-			this.state.velocity -= this.velocityStep;  
-			this.state.velocity *= -1;
-			moveAllVertical.call(this, entityIdBuffer);
-		}
-	}
-
 };
 
- // delegate state object constructor for our invaders,
-// allows group entities to share render/update/collison functions
-// over the delegate objects prototype chain. 
+// Delegate state object constructor for our invaders,
+// allows group entities to share render/update/collison functions over the delegate objects prototype chain. 
 function Invader() {}
 
 Invader.prototype.render = function invaderRender(scope){

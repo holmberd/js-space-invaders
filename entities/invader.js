@@ -8,8 +8,6 @@ var Entity = require('./entity.js');
  * that acts to delegate our prototype methods to all invaders.
  */
 
- // TODO: dimesion marker doesn't work when only one entity is left, needs fixing
-
 function createInvaders(scope, map) {
 
 	var INVADER_VELOCITY = 1,
@@ -19,7 +17,7 @@ function createInvaders(scope, map) {
 	INVADER_SPRITE_WIDTH = 15,
 	INVADER_SPRITE_IMAGE = null,
 	INVADER_GROUP_NAME = 'invader',
-	NUM_OF_INVADERS =  1;//60; // (5 * 12)
+	NUM_OF_INVADERS =  60; // (5 * 12)
 
 	var invaderSprite = {
 		height: INVADER_SPRITE_HEIGHT,
@@ -163,6 +161,10 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 				moveAllHorizontal.call(this, entityIdBuffer); // move all entities position horizontally
 			} else {
 				entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // restore entity position
+				/*
+				entityIdBuffer.forEach(function(id) { // update entities position to fill out last marginal to boundary edge
+					entities[id].state.position.x += scope.constants.width - (entities[dimensionMarkers.right].state.position.x + entities[id].sprite.width);
+				}, this);*/
 				this.state.velocity += this.velocityStep; // increase velocity
 				//MIN_MS_FIRE -= 100; 
 				this.state.velocity *= -1; // switch velocity direction, i.e. negative => postive & postive => negative
@@ -174,9 +176,9 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 				entities[dimensionMarkers.left].state.position.x -= this.state.velocity;
 				moveAllHorizontal.call(this, entityIdBuffer);
 			} else {
-				entities[dimensionMarkers.left].state.position.x -= this.state.velocity;
-				this.state.velocity += this.velocityStep;  
+				entities[dimensionMarkers.left].state.position.x -= this.state.velocity;  
 				this.state.velocity *= -1;
+				this.state.velocity += this.velocityStep;
 				moveAllVertical.call(this, entityIdBuffer);
 			}
 		}
@@ -187,13 +189,18 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 // allows group entities to share render/update/collison functions over the delegate objects prototype chain. 
 function Invader() {}
 
-Invader.prototype.render = function invaderRender(scope){
+Invader.prototype.render = function invaderRender(scope) {
+	scope.context.drawImage(
+		scope.img,
+		this.state.position.x,
+		this.state.position.y, 14, 14);
+	/*
 	scope.context.fillStyle = '#40d870';
     scope.context.fillRect(
         this.state.position.x,
         this.state.position.y,
         this.sprite.width, this.sprite.height
-    );
+    );*/
     return this;
 };
 

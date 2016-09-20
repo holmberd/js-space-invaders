@@ -10,6 +10,7 @@ var Entity = require('./entity.js');
 function createBullets(scope) {
     var SPRITE_HEIGHT = 8,
     SPRITE_WIDTH = 3,
+    SPRITE_COLOR = '#E7E7E7',
     SPRITE_IMAGE = null,
     BULLET_VELOCITY = -6,
     BULLET_HEALTH = 1,
@@ -18,6 +19,7 @@ function createBullets(scope) {
     NUM_OF_BULLETS = 50;
 
     var sprite = {
+        color: SPRITE_COLOR,
         height: SPRITE_HEIGHT,
         width: SPRITE_WIDTH,
         image: SPRITE_IMAGE
@@ -40,7 +42,7 @@ function createBullets(scope) {
 function Bullet() {}
 
 Bullet.prototype.render = function bulletRender(scope) {
-    scope.context.fillStyle = '#40d870';
+    scope.context.fillStyle = this.sprite.color;//'#40d870';
     scope.context.fillRect(
         this.state.position.x,
         this.state.position.y,

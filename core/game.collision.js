@@ -14,7 +14,7 @@
         // Cleans up entities that are `killed` flagged
         function cleanUpDeadEntities(entities) {
             for (var entity in entities) {
-                if (entities[entity].state.killed) {
+                if (entities[entity].hasOwnProperty('state') && entities[entity].state.killed) {
                     delete state.entities[entity];
                 }
             }
@@ -28,7 +28,7 @@
             for (var entity in entities) {
 
                 // If entity is `killed` or doesn't collide, skip entity collision check
-                if (entities[entity].state.killed || !entities[entity].collides)  {
+                if (!entities[entity].collides || entities[entity].state.killed)  {
                     continue;
                 }
                 for (var entityOther in entities) { 

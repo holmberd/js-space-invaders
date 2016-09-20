@@ -4,7 +4,7 @@
  * This module contains the main entity class.
  */
 function Entity(groupName, point, velocity, health, sprite) {
-    
+
     Object.defineProperty( this, 'id', { value: Entity.prototype.count++ } );
     this.group = groupName;
     this.collides = true;

@@ -125,6 +125,7 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
         var bullet = scope.state.inactiveEntities.bullets.pop();
         bullet.state.velocity *= -1; // switch bullet direction
         bullet.pc = true;	// set bullet to `pc`
+        bullet.sprite.color = '#EA1D1D'; // set bullet sprite color
         bullet.state.position.x = entity.state.position.x + (entity.sprite.width / 2) - (bullet.sprite.width / 2); 
         bullet.state.position.y = entity.state.position.y;
         scope.state.entities[bullet.id] = bullet;  // Place bullet in our active state of entities

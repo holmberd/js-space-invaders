@@ -12,9 +12,14 @@
         var state = scope.state || {};
 
         // Cleans up entities that are `killed` flagged
+        // and resuse bullets.
         function cleanUpDeadEntities(entities) {
             for (var entity in entities) {
                 if (entities[entity].hasOwnProperty('state') && entities[entity].state.killed) {
+                    if (entities[entity].group === 'bullet') {
+                        entities[entity].reset();
+                        state.inactiveEntities.bullets.push(entities[entity]);
+                    }
                     delete state.entities[entity];
                 }
             }

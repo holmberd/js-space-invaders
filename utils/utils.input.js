@@ -3,6 +3,7 @@ var inputHandler = {
 	RIGHT: 39,
 	LEFT: 37,
 	SPACE: 32,
+	ENTER: 13,
 
 	isDown: function isDown(keyCode) {
 		return this._isPressed[keyCode];

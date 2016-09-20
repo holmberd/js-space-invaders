@@ -1,5 +1,7 @@
 // /js/core/game.update.js
 
+var gameScore = require('../utils/utils.score.js');
+
 /** Game Update Module
  * Called by the game loop, this module will
  * perform any state calculations / updates
@@ -10,6 +12,8 @@ function gameUpdate(scope) {
     return function update(tFrame) {
         var state = scope.state || {};
 
+        gameScore(scope);
+
         // If there are entities, iterate through them and call their `update` methods
         if (state.hasOwnProperty('entities')) {
             var entities = state.entities;
@@ -17,7 +21,7 @@ function gameUpdate(scope) {
             for (var entity in entities) {
                 // If `entity` was `killed` flagged skip `entity`
                 // Dead `entity`will get cleaned up in collision module
-                if (entities[entity].state.killed) {
+                if (entities[entity].hasOwnProperty('state') && entities[entity].state.killed) {
                     continue; // run next `entity`
                 } else {
                     // Fire off each active entities `update` method

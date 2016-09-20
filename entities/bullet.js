@@ -15,7 +15,7 @@ function createBullets(scope) {
     BULLET_HEALTH = 1,
     BULLET_GROUP_NAME = 'bullet',
     BULLET_POINT = null,
-    NUM_OF_BULLETS = 200;
+    NUM_OF_BULLETS = 50;
 
     var sprite = {
         height: SPRITE_HEIGHT,
@@ -70,6 +70,13 @@ Bullet.prototype.collision = function(entity) {
             this.kill();
         } 
         return this;
+};
+
+Bullet.prototype.reset = function() {
+    this.state.killed = false;
+    this.pc = false;
+    this.state.velocity = -Math.abs(this.state.velocity);
+    return this;
 };
 
 module.exports = createBullets;

@@ -12,9 +12,10 @@ function Player(scope) {
     // set up const player globals
     var START_POS_X = scope.constants.width / 2 - 22,
         START_POS_Y = scope.constants.height - 45,
+        SPRITE_COLOR = '#E7E7E7',
         SPRITE_HEIGHT = 15,
         SPRITE_WIDTH = 45,
-        SPRITE_IMAGE = null,
+        SPRITE_IMAGE = scope.sprites.player,
         PLAYER_LIVES = 3,
         PLAYER_VELOCITY = 3,
         PLAYER_HEALTH = 1,
@@ -33,6 +34,7 @@ function Player(scope) {
 
     var point = new Point(START_POS_X, START_POS_Y);
     var sprite = {
+        color: SPRITE_COLOR,
         height: SPRITE_HEIGHT,
         width: SPRITE_WIDTH,
         image: SPRITE_IMAGE
@@ -69,6 +71,7 @@ function Player(scope) {
             this.enter = function() {
                 // Takes one of the inactive bullet entities from our array
                 var bullet = scope.state.inactiveEntities.bullets.pop();
+                bullet.sprite.color = player.sprite.color;
                 bullet.state.position.x = player.state.position.x + (player.sprite.width / 2) - (bullet.sprite.width / 2);
                 bullet.state.position.y = player.state.position.y;
                 // Place bullet in our active state of entities
@@ -118,7 +121,7 @@ function Player(scope) {
         }
 
         var fireState = fireInputHandler(tFrame);
-        if (fireState) {
+        if (fireState && !player.state.died) { // prevent player from firing if `died` state
             fireState.enter();
         }
 
@@ -161,12 +164,29 @@ function Player(scope) {
         if (player.state.died) {
             scope.context.globalAlpha = 0.5;
         }
-        scope.context.fillStyle = '#40d870';
+        scope.context.fillStyle = player.sprite.color;
         scope.context.fillRect(
             player.state.position.x,
-            player.state.position.y,
-            sprite.width, sprite.height
+            player.state.position.y+5,
+            sprite.width, sprite.height-5
         );
+        scope.context.fillRect(
+            player.state.position.x+10,
+            player.state.position.y,
+            sprite.width-20, sprite.height
+        );
+        scope.context.fillRect(
+            player.state.position.x+20,
+            player.state.position.y-10,
+            sprite.width-40, sprite.height
+        );
+
+        // Renders player lives in bottom left
+        for (var i = 0, n = 5; i < player.state.lives; i++){
+            scope.context.drawImage(player.sprite.image, n, scope.constants.height - 16, player.sprite.height, player.sprite.height);
+            n += 20;
+        }
+        
         scope.context.globalAlpha = 1;
     };
 

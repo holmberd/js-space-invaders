@@ -8,6 +8,7 @@ var gameUpdate = require('./core/game.update.js');
 var gameCollision = require('./core/game.collision.js');
 var gameRender = require('./core/game.render.js');
 var input = require('./utils/utils.input.js');
+var Menu = require('./utils/utils.menu.js');
 var Player = require('./entities/player.js');
 var createInvaders = require('./entities/invader.js');
 var createBlocks = require('./entities/blocks.js');
@@ -29,8 +30,11 @@ function Game(w, h, targetFps, showFps) {
 
     // Instantiate an empty state object
     this.state = {};
+
+    this.state.start = false;
     this.state.win = false;
     this.state.lost = false;
+
 
     this.viewport = generateCanvas(w, h);
     this.viewport.id = "gameViewport";
@@ -47,25 +51,32 @@ function Game(w, h, targetFps, showFps) {
     this.render = gameRender(this);
     this.loop = gameLoop(this);
 
+    // Instantiate input handler module
+    input.init();
+
     // Instantiate players, bullets and npc's modules with the current scope
     this.state.entities = this.state.entities || {};
     this.state.inactiveEntities = this.state.inactiveEntities || {};
     this.state.inactiveEntities.bullets = [];
 
+    this.state.entities.menu = new Menu();
+
+
+
+    /*
     // Instantiate bullets to store as inactive entities, 
     // this prevent us from having to do unecessary calc every time a bullet is fired.
     createBullets(this);
 
+    // Instantiate invaders with map positions
     createInvaders(this, map.invaders);
 
-    // Instantiate blocks with map
+    // Instantiate blocks with map positions
     createBlocks(this, map.blocks);
 
     // Instantiate player 
     this.state.entities.player = new Player(this);
-
-    // Instantiate input handler module
-    input.init();
+    */
 
     return this;
 }

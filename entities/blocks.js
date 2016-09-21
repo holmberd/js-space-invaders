@@ -1,20 +1,24 @@
-// /js/entities/blocks.js
+// /entities/blocks.js
 
 var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
 /** Block Module
- * Main block module
+ * Contains the delegate block class
+ * and the helper function for creating the blocks.
  */
 
+// Create our blocks
 function createBlocks(scope, map) {
 
+	// Setup block constants
 	var VELOCITY = 0,
 	HEALTH = 1,
 	SPRITE_HEIGHT = 15,
 	SPRITE_WIDTH = 15,
 	SPRITE_IMAGE = null,
-	GROUP_NAME = 'block';
+	GROUP_NAME = 'block',
+	NUM_OF_BLOCKS = 24;
 
 	var sprite = {
 		height: SPRITE_HEIGHT,
@@ -22,12 +26,10 @@ function createBlocks(scope, map) {
 		image: SPRITE_IMAGE
 	};
 
- 	var NUM_OF_BLOCKS = 24; //24,
-
-	// instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
+	// Instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
 	var delegateObj = new Block();
 
-	// set up all the blocks and handle them in the block object
+	// Creates all the blocks and their delegate methods
  	for (var i = 0, block = {}; i < NUM_OF_BLOCKS; i++) {
  		block = new Entity(GROUP_NAME, new Point(map[i][0], map[i][1]), VELOCITY, HEALTH, sprite);
  		block.delegate = delegateObj;
@@ -35,11 +37,12 @@ function createBlocks(scope, map) {
  	}
  }
 
-// delegate state object constructor for our blocks,
-// allows group entities to share render/update/collison functions
+// Delegate state object constructor for our blocks,
+// allows group entities to share render / update / collison methods
 // over the delegate objects prototype chain. 
 function Block() {}
 
+// Block render method
 Block.prototype.render = function blockRender(scope){
 	scope.context.drawImage(
 		scope.sprites.block, 
@@ -51,13 +54,15 @@ Block.prototype.render = function blockRender(scope){
     return this;
 };
 
+// Block update method
 Block.prototype.update = function blockUpdate(scope) {
 	return this;
 };
 
+// Block collision method
 Block.prototype.collision = function blockCollision(entity) {
-	if (entity.group === 'bullet') { // doesn't matter which bullet it has collided with, result is the same
-		console.log('Event: Block has collided with a bullet');
+	// Doesn't matter which bullet it has collided with, result is the same
+	if (entity.group === 'bullet') {
 		this.kill();
 	}
 	return this;

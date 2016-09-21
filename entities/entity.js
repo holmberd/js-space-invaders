@@ -1,7 +1,7 @@
-// /js/entities/entity.js
+// /entities/entity.js
 
-/** Entity Class
- * This module contains the main entity class.
+/** Entity Module
+ * Contains the main entity class.
  */
 function Entity(groupName, point, velocity, health, sprite) {
 
@@ -50,10 +50,10 @@ function Entity(groupName, point, velocity, health, sprite) {
     return this;
 }
 
-//Entity.prototype.constructor = Entity;
+Entity.prototype.count = 0; // Init the `id` count
 
-Entity.prototype.count = 0;
-
+// Called on an entity with the current game state
+// returns `true` if entity position is inside game boundary.
 Entity.prototype.inBoundary = function(scope) {
     var maxHeight = scope.constants.height - this.sprite.height - scope.constants.offset,
         maxWidth = scope.constants.width - this.sprite.width,
@@ -72,6 +72,7 @@ Entity.prototype.hasCollidedWith = function(entity) {
     return rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y;
 };
 
+// Set entity `killed` flag to `true`
 Entity.prototype.kill = function() {
         this.state.killed = true;
         return this;

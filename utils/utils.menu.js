@@ -21,14 +21,17 @@ Menu.prototype.update = function(scope) {
 
 Menu.prototype.render = function(scope) {
 	if (scope.state.win) {
+        scope.context.drawImage(scope.sprites.win, (scope.constants.width / 2) - (70 / 2), scope.constants.height / 2 - 170);
 		scope.context.font = '20px Courier';
 		scope.context.fillStyle = '#ff0';
     	scope.context.fillText('You Win!', 50 , scope.constants.height / 2 - 50);
 	} else if (scope.state.lost) {
+        scope.context.drawImage(scope.sprites.lost, (scope.constants.width / 2) - (70 / 2), scope.constants.height / 2 - 170);
 		scope.context.font = '20px Courier';
 		scope.context.fillStyle = '#ff0';
     	scope.context.fillText('You Lost!', 50 , scope.constants.height / 2 - 50);
 	}
+    scope.context.drawImage(scope.sprites.menu, 0, 0);
 	scope.context.font = '20px Courier';
 	scope.context.fillStyle = '#ff0';
     scope.context.fillText('Press \'ENTER\' to play', 50 , scope.constants.height / 2);

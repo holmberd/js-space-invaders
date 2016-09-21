@@ -1,11 +1,11 @@
-// /js/entities/player.js
+// /entities/player.js
 
 var input = require('../utils/utils.input.js');
 var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
 /** Player Module
- * Main player entity module.
+ * Create main Player class
  */
 function Player(scope) {
 
@@ -21,18 +21,17 @@ function Player(scope) {
         PLAYER_HEALTH = 1,
         PLAYER_GROUP_NAME = 'player';
 
-    // set up global for 'limbo' timing
+    // Set up global for 'limbo' timing
     var elapsedDead = null,
         beforeDead = null,
         MIN_MS_DEAD = 1000;    
 
-    // set up globals for firing timing
+    // Set up globals for firing timing
     var elapsedFireRate = null,
         beforeFireRate = null,
         MIN_MS_FIRE = 500;
 
-
-    var point = new Point(START_POS_X, START_POS_Y);
+    var point = new Point(START_POS_X, START_POS_Y); // Player starting point
     var sprite = {
         color: SPRITE_COLOR,
         height: SPRITE_HEIGHT,
@@ -40,10 +39,12 @@ function Player(scope) {
         image: SPRITE_IMAGE
     };
 
+    // Instantiate Player
     var player = new Entity(PLAYER_GROUP_NAME, point, PLAYER_VELOCITY, PLAYER_HEALTH, sprite);
     player.state.lives = PLAYER_LIVES;
     player.state.died = false;
 
+    // Player's input state functions
     var inputStates = {
         moveLeft: function() {
             this.enter = function() {

@@ -1,10 +1,10 @@
-// /js/core/game.collision.js
+// /core/game.collision.js
 
 /** Game Collision Module
  * Called by the game loop, this module will
- * check the current state for any collision
- * that has taken place in the game on the 
- * current state / update.
+ * use the game state to check for any collision
+ * that has taken place in the game.
+ * It will call all collided entities `collision` methods.
  */
 
  function gameCollision (scope) {
@@ -12,7 +12,7 @@
         var state = scope.state || {};
 
         // Cleans up entities that are `killed` flagged
-        // and resuse bullets.
+        // Reset state of used bullets and move them to `inactiveEntites` to be reused
         function cleanUpDeadEntities(entities) {
             for (var entity in entities) {
                 if (entities[entity].hasOwnProperty('state') && entities[entity].state.killed) {
@@ -32,17 +32,17 @@
             var entities = state.entities;
             for (var entity in entities) {
 
-                // If entity is `killed` or doesn't collide, skip entity collision check
+                // If entity is killed or doesn't collide, skip entity collision check
                 if (!entities[entity].collides || entities[entity].state.killed)  {
                     continue;
                 }
+                // Loop through entities and see if collision has occured
                 for (var entityOther in entities) { 
 
-                    // If `entity` can collide, and is not colliding with itself, and is not `killed` flagged,
-                    // and both entites are not of the same group.
+                    // If entity can collide, and is not colliding with itself, and is not `killed` flagged,
+                    // and both entites are not of the same group. Then call their `collision` methods.
                     if (entities[entityOther].collides && entityOther !== entity && !entities[entityOther].state.killed && !entities[entity].state.killed  && entities[entity].group !== entities[entityOther].group) {
                         if (entities[entity].hasCollidedWith(entities[entityOther])) {
-                            // Fire off each active entities `collision` method
                             entities[entity].collision(entities[entityOther]);
                             entities[entityOther].collision(entities[entity]);
                             break;
@@ -50,7 +50,7 @@
         			}
         		}
             }
-            cleanUpDeadEntities(entities);
+            cleanUpDeadEntities(entities); // Clean up any entities that got killed during collision
         }
 
         return state;

@@ -4,14 +4,15 @@ var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
 /** Invader Module
- * Main invader module creates our invader entities and the wrapper entity
- * that acts to delegate our prototype methods to all invaders.
+ * Contains main wrapper invaders class, invader delegate class 
+ * and helper function for creating the invaders. 
+ * Main invaders class act as a wrapper for the invader delegate class,
+ * which delegates its methods to the invader entities.
  */
-
- // TODO: When invaders reach bottom and doesn't collide with player, player should still lose.
 
 function createInvaders(scope, map) {
 
+	// Setup invader constants
 	var INVADER_VELOCITY = 1,
 	INVADERS_VELOCITY_STEP = 0.02,
 	INVADER_HEALTH = 1,
@@ -36,16 +37,16 @@ function createInvaders(scope, map) {
 
 	// Instantiate the wrapper for all our entities
 	var invaders = new Entity('invaders');
-	invaders.collides = false; // wrapper for our entites will not have a collision method
-	invaders.before = null; // helper property for time calc with tFrame
-	invaders.velocityStep = INVADERS_VELOCITY_STEP; // each invader's step to update each frame
-	invaders.state.velocity = INVADER_VELOCITY; // init velocity
+	invaders.collides = false; // Delegate class for our entites will not have a collision method
+	invaders.before = null; // Helper property for time calc with tFrame
+	invaders.velocityStep = INVADERS_VELOCITY_STEP; // Each invader's step to update each frame
+	invaders.state.velocity = INVADER_VELOCITY; // Init velocity
 	invaders.sprite = {
 		height: INVADER_SPRITE_HEIGHT * 5, // 5 rows of invaders
 		width: INVADER_SPRITE_WIDTH * 12, // 12 invaders in every row
 		image: null
 	};
-	invaders.delegate = new Invaders(); // Instantiate our delegate object for the wrapper
+	invaders.delegate = new Invaders(); // Instantiate our delegate object
 	scope.state.entities[invaders.id] = invaders;
 
 	// Instantiate the delegate object for invader entity
@@ -69,7 +70,7 @@ function createInvaders(scope, map) {
 // acts as the wrapper for our invader entities
 function Invaders() {}
 
-// Are left empty, they are handled on `entity` level
+// Are left empty, they are handled on `Entity` level
 Invaders.prototype.render = function() { return this; };
 Invaders.prototype.collison = function() { return this; };
 
@@ -124,7 +125,8 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 		}, this);
 	}
 
-	function fireRandomBullet() {		
+	function fireRandomBullet() {
+
 		// Returns a random number between min (inclusive) and max (exclusive)
 		function getRandomInt(min, max) {
   			min = Math.ceil(min);
@@ -146,46 +148,48 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 	}
 
 	// Loop over all entites and store each entity's `id` in a buffer array
+	// and check if any invader has reached the surface.
 	for (var entity in entities) {
 		if (entities[entity].group === 'invader') {
+			// If invaders reaches the surface then player has lost the game
+			if (entities[entity].state.position.y > scope.constants.height - scope.constants.offset - entities[entity].sprite.height) {
+				game.state.lost = true;
+			}
 			entityIdBuffer.push(entities[entity].id);
 		}
 	}
 
-	// If there are not invaders left and `player` hasn't alredy lost
+	// If there are not invaders left and `player` hasn't already lost
 	// then game is set to `win`, otherwise continue updating
 	if (entityIdBuffer.length === 0 && !game.state.lost) {
 		game.state.win = true;
 	} else {
-		if (!this.before) { // init to keep track of elapsed time to restrict fire rate
+
+		if (!this.before) { // Init to keep track of elapsed time to restrict fire rate
 			this.before = tFrame;
 		} else {
-			elapsed = tFrame - this.before; // calc elapsed time
-			if (elapsed > MIN_MS_FIRE) { // delay and restrict rate of fire for invaders
+			elapsed = tFrame - this.before; // Calc elapsed time
+			if (elapsed > MIN_MS_FIRE) { // Delay and restrict rate of fire for invaders
 				fireRandomBullet(entityIdBuffer);
-				this.before = null; // reset before prop so we can fire again
+				this.before = null; // Reset before prop so we can fire again
 			}
 		}
 
-		dimensionMarkers = getDimensions(entityIdBuffer); // calc and store our dimension markers
+		dimensionMarkers = getDimensions(entityIdBuffer); // Calc and store our dimension markers
 
-		if (this.state.velocity > 0) { // if velocity is a positive number -> invaders are moving right 
-			entities[dimensionMarkers.right].state.position.x += this.state.velocity; // increase position of the entity furthest right
-			if (entities[dimensionMarkers.right].inBoundary(scope)) { // if that entity is still in game boundaries
-				entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // restore entity position before updating all
-				moveAllHorizontal.call(this, entityIdBuffer); // move all entities position horizontally
+		if (this.state.velocity > 0) { // If velocity is a positive number -> invaders are moving right 
+			entities[dimensionMarkers.right].state.position.x += this.state.velocity; // Increase position of the entity furthest right
+			if (entities[dimensionMarkers.right].inBoundary(scope)) { // If that entity is still in game boundaries
+				entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // Restore entity position before updating all
+				moveAllHorizontal.call(this, entityIdBuffer); // Move all entities position horizontally
 			} else {
-				entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // restore entity position
-				/*
-				entityIdBuffer.forEach(function(id) { // update entities position to fill out last marginal to boundary edge
-					entities[id].state.position.x += scope.constants.width - (entities[dimensionMarkers.right].state.position.x + entities[id].sprite.width);
-				}, this);*/
-				this.state.velocity += this.velocityStep; // increase velocity
+				entities[dimensionMarkers.right].state.position.x -= this.state.velocity; // Restore entity position
+				this.state.velocity += this.velocityStep; // Increase velocity
 				//MIN_MS_FIRE -= 100; 
-				this.state.velocity *= -1; // switch velocity direction, i.e. negative => postive & postive => negative
-				moveAllVertical.call(this, entityIdBuffer); // move all invaders down one row 
+				this.state.velocity *= -1; // Switch velocity direction, i.e. negative => postive & postive => negative
+				moveAllVertical.call(this, entityIdBuffer); // Move all invaders down one row 
 			}
-		} else { // else velocity is a negative number -> invaders are moving left
+		} else { // Else velocity is a negative number -> invaders are moving left
 			entities[dimensionMarkers.left].state.position.x += this.state.velocity;
 			if (entities[dimensionMarkers.left].inBoundary(scope)) {
 				entities[dimensionMarkers.left].state.position.x -= this.state.velocity;
@@ -204,28 +208,25 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 // allows group entities to share render/update/collison functions over the delegate objects prototype chain. 
 function Invader() {}
 
+// Main render method for all invaders
 Invader.prototype.render = function invaderRender(scope) {
 	scope.context.drawImage(
 		this.sprite.image,
 		this.state.position.x,
-		this.state.position.y, this.sprite.width, this.sprite.height);
-	/*
-	scope.context.fillStyle = '#40d870';
-    scope.context.fillRect(
-        this.state.position.x,
-        this.state.position.y,
-        this.sprite.width, this.sprite.height
-    );*/
+		this.state.position.y, 
+		this.sprite.width, 
+		this.sprite.height);
+
     return this;
 };
 
-// Left empty, because it is handled by our global update wrapper
+// Left empty, because it is handled by the global `invaders` update method
 Invader.prototype.update = function invaderUpdate(scope) {
 	return this;
 };
 
+// Main collision method for all invaders
 Invader.prototype.collision = function invaderCollision(entity, scope) {
-
 	if (entity.group === 'bullet' && !entity.pc) {
 		console.log('Event: Invader has collided with a bullet');
 		this.kill();

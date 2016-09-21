@@ -1,6 +1,4 @@
-// /js/game.js
-
-// TODO: Need to be able to stop and start game from menu, and option to play again after player has died. 
+// /game.js
 
 var generateCanvas = require('./utils/utils.canvas.js');
 var gameLoop = require('./core/game.loop.js');
@@ -18,13 +16,9 @@ var map = require('./conf/map.json');
 
 var container = document.querySelector('#container');
 
-// Create base game class
+// Create game base class
 function Game(w, h, targetFps, showFps) {
 
-    this.img = document.getElementById("invader");
-    this.blockImg = document.getElementById("block");
-
-    this.sprites = loadSprites();
     // Setup some constants
     this.constants = {
         offset: 25,
@@ -34,14 +28,18 @@ function Game(w, h, targetFps, showFps) {
         showFps: showFps
     };
 
+    // Load sprites from JSON as data-uri
+    this.sprites = loadSprites();
+
     // Instantiate an empty state object
     this.state = {};
 
+    // Setup game progression states
     this.state.start = false;
     this.state.win = false;
     this.state.lost = false;
 
-
+    // Generate and store the canvas as a viewport global
     this.viewport = generateCanvas(w, h);
     this.viewport.id = "gameViewport";
 
@@ -65,13 +63,16 @@ function Game(w, h, targetFps, showFps) {
     this.state.inactiveEntities = this.state.inactiveEntities || {};
     this.state.inactiveEntities.bullets = [];
 
+    // Instantiate the game menu module
+    // Menu can be passed as an `Entity` as it has a `update` and `render` method
     this.state.entities.menu = new Menu();
 
     return this;
 }
 
 // Instantiate the game in a global
-window.game = new Game(360, 450, 30, true);
+// window.game = new Game(360, 450, 30, true); // with fps counter
+window.game = new Game(360, 450, 30, false);
 
 // Export the game as a module
 module.exports = game;

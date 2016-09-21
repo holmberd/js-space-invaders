@@ -1,13 +1,12 @@
-// /js/core/game.render.js
+// /core/game.render.js
 
 /** Game Render Module
  * Called by the game loop, this module will
- * perform use the global state to re-render
- * the canvas using new data. Additionally,
- * it will call all game entities `render`
- * methods.
+ * use the game state to re-render the canvas. 
+ * Additionally, it will call all game entities `render` methods.
  */
 function gameRender(scope) {
+
     // Setup globals
     var w = scope.constants.width,
         h = scope.constants.height,
@@ -18,8 +17,8 @@ function gameRender(scope) {
         scope.context.clearRect(0, 0, w, h);
         scope.context.font = '26px Courier';
 
+        // If game has been started draw bottom score board divider
         if (scope.state.start) {
-            // Draw bottom score board diviver
             scope.context.strokeStyle = '#40d870';
             scope.context.beginPath();
             scope.context.moveTo(0, h - (offset - 5));

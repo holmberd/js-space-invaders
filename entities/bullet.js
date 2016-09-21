@@ -1,13 +1,17 @@
-// /js/entities/Bullet.js
+// /entities/Bullet.js
 
 var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
 /** Bullet Module
- * Main bullet entity module.
+ * Contains the delegate bullet class 
+ * and the helper function for creating the bullets.
  */
 
+// Create our bullets
 function createBullets(scope) {
+
+    // Setup bullet constants
     var SPRITE_HEIGHT = 8,
     SPRITE_WIDTH = 3,
     SPRITE_COLOR = '#E7E7E7',
@@ -25,24 +29,27 @@ function createBullets(scope) {
         image: SPRITE_IMAGE
     };
 
-    // instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
+    // Instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
     var delegateObj = new Bullet();
 
     // Instantiate bullets to store as inactive entities, 
-    // this prevent us from instantiating every time a bullet is fired
+    // this prevent the game from doing uncesseray instantiations every time a bullet is fired
     for (var n = 0, bullet = {}; n < NUM_OF_BULLETS; n++) {
         bullet = new Entity(BULLET_GROUP_NAME, BULLET_POINT, BULLET_VELOCITY, BULLET_HEALTH, sprite);
         bullet.delegate = delegateObj;
-        // 'pc' property default to false as player bullet, otherwise invader(pc)
-        bullet.pc = false;
+        bullet.pc = false; // `pc` property defaults to player(false), otherwise invader(true)
         scope.state.inactiveEntities.bullets.push(bullet);
     }
 }
 
+// Delegate state object constructor for our bullets,
+// allows group entities to share render / update / collison methods
+// over the delegate objects prototype chain. 
 function Bullet() {}
 
+// Bullet render method
 Bullet.prototype.render = function bulletRender(scope) {
-    scope.context.fillStyle = this.sprite.color;//'#40d870';
+    scope.context.fillStyle = this.sprite.color;
     scope.context.fillRect(
         this.state.position.x,
         this.state.position.y,
@@ -51,22 +58,25 @@ Bullet.prototype.render = function bulletRender(scope) {
     );
 };
 
+// Bullet update method
 Bullet.prototype.update = function bulletUpdate(scope) {
         var point = new Point(0, this.state.position.y);
+
         // If bullet is in game boundary update movement, 
-        // otherwise set `killed` flag and remove before next update (decoupling)
+        // otherwise set `killed` flag and remove before next update.
         if (this.inBoundary(scope)) {
-            this.state.position.y += this.state.velocity; // bullet direction is velocity dependent pos/neg
+            this.state.position.y += this.state.velocity; // Bullet direction is velocity dependent pos/neg
         } else {
             this.kill(); 
             return this;
         }
 };
 
+// Bullet collision method
 Bullet.prototype.collision = function(entity) {
-        if (entity.group === 'player' && this.pc) { // player's bullet can't collide with player
-            this.kill(); // Set `bullet` state to `killed`
-        } else if (entity.group === 'invader' && !this.pc) { // invader's bullet can't collide with invader
+        if (entity.group === 'player' && this.pc) { // (this.pc) Player's bullets can't collide with player
+            this.kill();
+        } else if (entity.group === 'invader' && !this.pc) { // (!this.pc) Invader's bullets can't collide with invader
             this.kill();
         } else if (entity.group === 'block') {
             this.kill();
@@ -74,10 +84,11 @@ Bullet.prototype.collision = function(entity) {
         return this;
 };
 
+// Bullet reset method
 Bullet.prototype.reset = function() {
     this.state.killed = false;
     this.pc = false;
-    this.state.velocity = -Math.abs(this.state.velocity);
+    this.state.velocity = -Math.abs(this.state.velocity); // Restore velocity to default negative number
     return this;
 };
 

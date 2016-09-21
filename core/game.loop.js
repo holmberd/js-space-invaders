@@ -1,9 +1,10 @@
-// /js/core/game.loop.js
+// /core/game.loop.js
 
 /** Game Loop Module
  * This module contains the game loop, which handles
  * updating the game state and re-rendering the canvas
  * (using the updated state) at the configured FPS.
+ * (https://github.com/aesinv/javascript-game-demo)
  */
 function gameLoop ( scope ) {
     var loop = {};

@@ -4,7 +4,7 @@ var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
 /** Bullet Module
- * Contains the delegate Bullet object constructor 
+ * Contains the delegate Bullet Object Constructor 
  * and the helper function for creating the bullets.
  */
 

@@ -4,9 +4,9 @@ var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
 /** Invader Module
- * Contains main wrapper invaders class, invader delegate class 
- * and helper function for creating the invaders. 
- * Main invaders class act as a wrapper for the invader delegate class,
+ * Contains main wrapper Invaders Object constructor,
+ * Invader Object constructor and helper function for creating the invaders. 
+ * Main Invaders Constructor act as a wrapper for the Invader delegate Object,
  * which delegates its methods to the invader entities.
  */
 
@@ -37,7 +37,7 @@ function createInvaders(scope, map) {
 
 	// Instantiate the wrapper for all our entities
 	var invaders = new Entity('invaders');
-	invaders.collides = false; // Delegate class for our entites will not have a collision method
+	invaders.collides = false; // Delegate Object for our entites will not have a collision method
 	invaders.before = null; // Helper property for time calc with tFrame
 	invaders.velocityStep = INVADERS_VELOCITY_STEP; // Each invader's step to update each frame
 	invaders.state.velocity = INVADER_VELOCITY; // Init velocity

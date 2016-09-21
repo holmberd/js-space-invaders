@@ -5,11 +5,11 @@ var Point = require('../utils/utils.math.js');
 var Entity = require('./entity.js');
 
 /** Player Module
- * Create main Player class
+ * Create main Player Object Constructor
  */
 function Player(scope) {
 
-    // set up const player globals
+    // Setup const player globals
     var START_POS_X = scope.constants.width / 2 - 22,
         START_POS_Y = scope.constants.height - 45,
         SPRITE_COLOR = '#E7E7E7',

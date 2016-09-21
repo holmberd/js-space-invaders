@@ -1,5 +1,15 @@
 // /game.js
 
+/**
+ * This creates an instance of the game 'Space Invaders'.
+ * Engine and game written in Vanilla JavaScript
+ *
+ * Licensed under the MIT license.
+ *
+ * Dag Holmberg
+ * https://github.com/holmberd
+ */
+
 var generateCanvas = require('./utils/utils.canvas.js');
 var gameLoop = require('./core/game.loop.js');
 var gameUpdate = require('./core/game.update.js');

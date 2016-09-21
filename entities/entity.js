@@ -1,7 +1,7 @@
 // /entities/entity.js
 
 /** Entity Module
- * Contains the main entity class.
+ * Contains the main Entity Object Constructor
  */
 function Entity(groupName, point, velocity, health, sprite) {
 

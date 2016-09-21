@@ -48,7 +48,7 @@ function createBullets(scope) {
 function Bullet() {}
 
 // Bullet render method
-Bullet.prototype.render = function bulletRender(scope) {
+Bullet.prototype.render = function bulletRender (scope) {
     scope.context.fillStyle = this.sprite.color;
     scope.context.fillRect(
         this.state.position.x,
@@ -59,7 +59,7 @@ Bullet.prototype.render = function bulletRender(scope) {
 };
 
 // Bullet update method
-Bullet.prototype.update = function bulletUpdate(scope) {
+Bullet.prototype.update = function bulletUpdate (scope) {
         var point = new Point(0, this.state.position.y);
 
         // If bullet is in game boundary update movement, 
@@ -73,7 +73,7 @@ Bullet.prototype.update = function bulletUpdate(scope) {
 };
 
 // Bullet collision method
-Bullet.prototype.collision = function(entity) {
+Bullet.prototype.collision = function (entity) {
         if (entity.group === 'player' && this.pc) { // (this.pc) Player's bullets can't collide with player
             this.kill();
         } else if (entity.group === 'invader' && !this.pc) { // (!this.pc) Invader's bullets can't collide with invader
@@ -85,7 +85,7 @@ Bullet.prototype.collision = function(entity) {
 };
 
 // Bullet reset method
-Bullet.prototype.reset = function() {
+Bullet.prototype.reset = function () {
     this.state.killed = false;
     this.pc = false;
     this.state.velocity = -Math.abs(this.state.velocity); // Restore velocity to default negative number

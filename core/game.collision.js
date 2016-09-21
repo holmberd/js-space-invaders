@@ -7,7 +7,7 @@
  * It will call all collided entities `collision` methods.
  */
 
- function gameCollision (scope) {
+ function gameCollision(scope) {
     return function collision(tFrame) {
         var state = scope.state || {};
 

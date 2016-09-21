@@ -43,7 +43,7 @@ function createBlocks(scope, map) {
 function Block() {}
 
 // Block render method
-Block.prototype.render = function blockRender(scope){
+Block.prototype.render = function blockRender (scope){
 	scope.context.drawImage(
 		scope.sprites.block, 
 		this.state.position.x, 
@@ -55,12 +55,12 @@ Block.prototype.render = function blockRender(scope){
 };
 
 // Block update method
-Block.prototype.update = function blockUpdate(scope) {
+Block.prototype.update = function blockUpdate (scope) {
 	return this;
 };
 
 // Block collision method
-Block.prototype.collision = function blockCollision(entity) {
+Block.prototype.collision = function blockCollision (entity) {
 	// Doesn't matter which bullet it has collided with, result is the same
 	if (entity.group === 'bullet') {
 		this.kill();

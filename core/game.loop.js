@@ -6,7 +6,7 @@
  * (using the updated state) at the configured FPS.
  * (https://github.com/aesinv/javascript-game-demo)
  */
-function gameLoop ( scope ) {
+function gameLoop(scope) {
     var loop = {};
 
     // Initialize timer variables so we can calculate FPS
@@ -35,7 +35,7 @@ function gameLoop ( scope ) {
 
 
     // Main game rendering loop
-    loop.main = function mainLoop( tframe ) {
+    loop.main = function mainLoop (tframe) {
         // Request a new Animation Frame
         // setting to `stopLoop` so animation can be stopped via
         // `window.cancelAnimationFrame( loop.stopLoop )`

@@ -54,7 +54,7 @@ Entity.prototype.count = 0; // Init the `id` count
 
 // Called on an entity with the current game state
 // returns `true` if entity position is inside game boundary.
-Entity.prototype.inBoundary = function(scope) {
+Entity.prototype.inBoundary = function (scope) {
     var maxHeight = scope.constants.height - this.sprite.height - scope.constants.offset,
         maxWidth = scope.constants.width - this.sprite.width,
         x = this.state.position.x,
@@ -66,32 +66,32 @@ Entity.prototype.inBoundary = function(scope) {
 
 // 2D rect collision detection based of: 
 // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
-Entity.prototype.hasCollidedWith = function(entity) {
+Entity.prototype.hasCollidedWith = function (entity) {
     var rect1 = { x: this.state.position.x, y: this.state.position.y, width: this.sprite.width, height: this.sprite.height };
     var rect2 = { x: entity.state.position.x, y: entity.state.position.y, width: entity.sprite.width, height: entity.sprite.height };
     return rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x && rect1.y < rect2.y + rect2.height && rect1.height + rect1.y > rect2.y;
 };
 
 // Set entity `killed` flag to `true`
-Entity.prototype.kill = function() {
+Entity.prototype.kill = function () {
         this.state.killed = true;
         return this;
     };
 
 // Delegates to our delegate objects methods on its prototype chain
-Entity.prototype.update = function() {
+Entity.prototype.update = function () {
     return this.delegate.update.apply(this, arguments);
 };
 
-Entity.prototype.render = function() {
+Entity.prototype.render = function () {
     return this.delegate.render.apply(this, arguments);
 };
 
-Entity.prototype.collision = function() {
+Entity.prototype.collision = function () {
     return this.delegate.collision.apply(this, arguments);  
 };
 
-Entity.prototype.reset = function() {
+Entity.prototype.reset = function () {
     return this.delegate.reset.apply(this, arguments);
 };
 

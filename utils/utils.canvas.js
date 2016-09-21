@@ -1,3 +1,9 @@
+// /utils/utils.canvas.js
+
+/** Canvas Module
+ * Create main canvas for the game.
+ */
+
 function generateCanvas(w, h) {
   console.log('Generating canvas.');
 
@@ -7,8 +13,6 @@ function generateCanvas(w, h) {
   // Set the `canvas` width & height
   canvas.width = w;
   canvas.height = h;
-  //canvas.style.width = w;
-  //canvas.style.height = h;
 
   return canvas;
 }

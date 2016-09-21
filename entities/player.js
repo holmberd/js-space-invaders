@@ -44,10 +44,10 @@ function Player(scope) {
     player.state.lives = PLAYER_LIVES;
     player.state.died = false;
 
-    // Player's input state functions
+    // Player's input state functions in our state machine
     var inputStates = {
-        moveLeft: function() {
-            this.enter = function() {
+        moveLeft: function () { // Move player left
+            this.enter = function () {
                 player.state.position.x -= player.state.velocity;
                 if (player.inBoundary(scope)) {
                     return this;
@@ -57,8 +57,8 @@ function Player(scope) {
                 return this;
             };
         },
-        moveRight: function() {
-            this.enter = function() {
+        moveRight: function () {
+            this.enter = function () { // Move player right
                 player.state.position.x += player.state.velocity;
                 if (player.inBoundary(scope)) {
                     return this;
@@ -68,8 +68,8 @@ function Player(scope) {
                 return this;
             };
         },
-        shoot: function(tFrame) {
-            this.enter = function() {
+        shoot: function (tFrame) { // Player fire bullet
+            this.enter = function () { 
                 // Takes one of the inactive bullet entities from our array
                 var bullet = scope.state.inactiveEntities.bullets.pop();
                 bullet.sprite.color = player.sprite.color;
@@ -78,17 +78,16 @@ function Player(scope) {
                 // Place bullet in our active state of entities
                 scope.state.entities[bullet.id] = bullet;
             };
-            // set `now` property on shoot-event so we can put a delay and restrict rate of fire
+            // Set `beforeFireRate` property on shoot-event so we can put a delay and restrict rate of fire
             this.beforeFireRate = tFrame;
         }
     };
 
     // Fired via the global update method.
     // Mutates state as needed for proper rendering next state
-    player.update = function playerUpdate(scope, tFrame) {
-
-        function fireInputHandler(tFrame) {
-            // handles firing input
+    player.update = function playerUpdate (scope, tFrame) {
+        // Handles input for player to fire bullets
+        function fireInputHandler (tFrame) {
             if (input.isDown(input.SPACE)) {
                 var shoot = null;
                 if (!beforeFireRate) {
@@ -97,7 +96,8 @@ function Player(scope) {
                     return shoot;
                 } else {
                     elapsedFireRate = tFrame - beforeFireRate;
-                    // if elapsedFireRate time is bigger than minimum allowed, we can fire again
+
+                    // If elapsedFireRate time is bigger than minimum allowed, we can fire again
                     if (elapsedFireRate > MIN_MS_FIRE) {
                         beforeFireRate = null;
                         return shoot;
@@ -106,8 +106,8 @@ function Player(scope) {
             }
         }
 
+        // Left/right input handler
         function moveInputHandler() {
-            // handles left/right input
             if (input.isDown(input.LEFT)) {
                 return new inputStates.moveLeft();
             } else if (input.isDown(input.RIGHT)) {
@@ -115,17 +115,17 @@ function Player(scope) {
             } return null;
         }
 
-        // Check if keys are pressed, if so, update the players position.
+        // If keys are pressed, update the players position.
         var moveState = moveInputHandler();
         if (moveState) {
             moveState.enter();
         }
-
+        // If key is pressed, fire bullet
         var fireState = fireInputHandler(tFrame);
-        if (fireState && !player.state.died) { // prevent player from firing if `died` state
+        if (fireState && !player.state.died) { // Frevent player from firing if `died` state
             fireState.enter();
         }
-
+        // If player died(lost life), keep in 'limbo' for MIN_MS
         if (player.state.died) {
             if (!beforeDead) {
                 beforeDead = tFrame;
@@ -136,32 +136,30 @@ function Player(scope) {
                     player.state.died = false;
                 }
             }    
-        }
-        
+        }       
     };
 
-    player.collision = function playerCollision(entity) {
+    // Player collision method
+    player.collision = function playerCollision (entity) {
 
-        // If `entity` is a bullet then bullet must come from an `invader` 
-        // and `player` can't be in 'limbo' state
+        // If player gets hit by invader fire and player is not already in
+        // a dead state, then player lose one life.
         if (entity.group === 'bullet' && entity.pc && !player.state.died) {
             player.state.lives--;
-            if (player.state.lives === 0) {
-                console.log('player is dead');
+            if (player.state.lives === 0) { // If player has no more lifes, player lost.
                 game.state.lost = true;
                 return this;
             }
-            player.state.died = true;
-            console.log('Event: player lost one life');
+            player.state.died = true; // Player state set to `died` for MIN_MS
             return this;
-        } else if (entity.group === 'invader') { // If `entity` is a `invader`, game is lost
+        } else if (entity.group === 'invader') { // If player collides with an invader, player lost.
             game.state.lost = true;
         }
         return this;
     };
 
-    // Draw the `player` on the canvas
-    player.render = function playerRender() {
+    // Draw the player on the canvas
+    player.render = function playerRender () {
         if (player.state.died) {
             scope.context.globalAlpha = 0.5;
         }

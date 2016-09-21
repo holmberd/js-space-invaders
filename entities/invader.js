@@ -71,11 +71,11 @@ function createInvaders(scope, map) {
 function Invaders() {}
 
 // Are left empty, they are handled on `Entity` level
-Invaders.prototype.render = function() { return this; };
-Invaders.prototype.collison = function() { return this; };
+Invaders.prototype.render = function () { return this; };
+Invaders.prototype.collison = function () { return this; };
 
 // Main update method for all our invaders
-Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
+Invaders.prototype.update = function invadersUpdate (scope, tFrame) {
 	var entities = scope.state.entities;
 	var dimensionMarkers = {};
 	var entityIdBuffer = [];
@@ -113,14 +113,14 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 	}
 	// Update all invader entities in the vertical direction
 	function moveAllVertical(arr) {
-		arr.forEach(function(id) {
+		arr.forEach(function (id) {
 			entities[id].state.position.y += entities[id].sprite.height;
 		}, this);
 	}
 
 	// Update all invader entities in the horizontal direction
 	function moveAllHorizontal(arr) {
-		arr.forEach(function(id) {
+		arr.forEach(function (id) {
 			entities[id].state.position.x += this.state.velocity;
 		}, this);
 	}
@@ -209,7 +209,7 @@ Invaders.prototype.update = function invadersUpdate(scope, tFrame) {
 function Invader() {}
 
 // Main render method for all invaders
-Invader.prototype.render = function invaderRender(scope) {
+Invader.prototype.render = function invaderRender (scope) {
 	scope.context.drawImage(
 		this.sprite.image,
 		this.state.position.x,
@@ -221,14 +221,13 @@ Invader.prototype.render = function invaderRender(scope) {
 };
 
 // Left empty, because it is handled by the global `invaders` update method
-Invader.prototype.update = function invaderUpdate(scope) {
+Invader.prototype.update = function invaderUpdate (scope) {
 	return this;
 };
 
 // Main collision method for all invaders
-Invader.prototype.collision = function invaderCollision(entity, scope) {
+Invader.prototype.collision = function invaderCollision (entity, scope) {
 	if (entity.group === 'bullet' && !entity.pc) {
-		console.log('Event: Invader has collided with a bullet');
 		this.kill();
 		return this;
 	} else if (entity.group === 'block') {

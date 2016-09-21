@@ -41,12 +41,13 @@ function createBlocks(scope, map) {
 function Block() {}
 
 Block.prototype.render = function blockRender(scope){
-	scope.context.fillStyle = '#40d870';
-    scope.context.fillRect(
-        this.state.position.x,
-        this.state.position.y,
-        this.sprite.width, this.sprite.height
-    );
+	scope.context.drawImage(
+		scope.sprites.block, 
+		this.state.position.x, 
+		this.state.position.y, 
+		this.sprite.width,
+		this.sprite.height);
+
     return this;
 };
 

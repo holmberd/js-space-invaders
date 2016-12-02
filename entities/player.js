@@ -1,11 +1,11 @@
 // /entities/player.js
 
 var input = require('../utils/utils.input.js');
-var Point = require('../utils/utils.math.js');
+var Point = require('../utils/utils.math.js').Point;
 var Entity = require('./entity.js');
 
 /** Player Module
- * Create main Player Object Constructor
+ * Player Object Constructor
  */
 function Player(scope) {
 

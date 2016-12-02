@@ -1,10 +1,10 @@
 // /entities/Bullet.js
 
-var Point = require('../utils/utils.math.js');
+var Point = require('../utils/utils.math.js').Point;
 var Entity = require('./entity.js');
 
 /** Bullet Module
- * Contains the delegate Bullet Object Constructor 
+ * Contains the Bullet Object Constructor 
  * and the helper function for creating the bullets.
  */
 
@@ -14,7 +14,7 @@ function createBullets(scope) {
     // Setup bullet constants
     var SPRITE_HEIGHT = 8,
     SPRITE_WIDTH = 3,
-    SPRITE_COLOR = '#E7E7E7',
+    SPRITE_COLOR = '#EA1D1D',
     SPRITE_IMAGE = null,
     BULLET_VELOCITY = -6,
     BULLET_HEALTH = 1,
@@ -24,12 +24,16 @@ function createBullets(scope) {
 
     var sprite = {
         color: SPRITE_COLOR,
+        defaultColor: SPRITE_COLOR,
         height: SPRITE_HEIGHT,
         width: SPRITE_WIDTH,
         image: SPRITE_IMAGE
     };
 
-    // Instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
+    // Instantiate the delegate object (reference to a prototype chain of methods)
+    // allows group entities to share render / update / collison methods
+    // over the delegate objects prototype chain. 
+    // Uses a form of Parasitic inheritance.
     var delegateObj = new Bullet();
 
     // Instantiate bullets to store as inactive entities, 
@@ -42,9 +46,7 @@ function createBullets(scope) {
     }
 }
 
-// Delegate state object constructor for our bullets,
-// allows group entities to share render / update / collison methods
-// over the delegate objects prototype chain. 
+// Bullet object constructor
 function Bullet() {}
 
 // Bullet render method
@@ -62,7 +64,7 @@ Bullet.prototype.render = function bulletRender (scope) {
 Bullet.prototype.update = function bulletUpdate (scope) {
         var point = new Point(0, this.state.position.y);
 
-        // If bullet is in game boundary update movement, 
+        // If bullet is in boundary, update movement, 
         // otherwise set `killed` flag and remove before next update.
         if (this.inBoundary(scope)) {
             this.state.position.y += this.state.velocity; // Bullet direction is velocity dependent pos/neg
@@ -89,6 +91,7 @@ Bullet.prototype.reset = function () {
     this.state.killed = false;
     this.pc = false;
     this.state.velocity = -Math.abs(this.state.velocity); // Restore velocity to default negative number
+    this.sprite.color = this.sprite.defaultColor;
     return this;
 };
 

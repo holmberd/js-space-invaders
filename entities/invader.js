@@ -1,13 +1,16 @@
 // /entities/invader.js
 
-var Point = require('../utils/utils.math.js');
+var Point = require('../utils/utils.math.js').Point;
+var getRandomInt = require('../utils/utils.math.js').getRandomInt;
 var Entity = require('./entity.js');
 
 /** Invader Module
  * Contains main wrapper Invaders Object constructor,
- * Invader Object constructor and helper function for creating the invaders. 
- * Main Invaders Constructor act as a wrapper for the Invader delegate Object,
- * which delegates its methods to the invader entities.
+ * Invader Object constructor and helper function for creating the invaders.
+ *
+ * Main Invaders Constructor holds all invaders and delegates its methods trough 
+ * the Invader delegate Object, which in turn delegates 
+ * its methods to the each invader entitie.
  */
 
 function createInvaders(scope, map) {
@@ -111,6 +114,7 @@ Invaders.prototype.update = function invadersUpdate (scope, tFrame) {
 		}
 		return { bottom: bottom.id, right: right.id, left: left.id };
 	}
+
 	// Update all invader entities in the vertical direction
 	function moveAllVertical(arr) {
 		arr.forEach(function (id) {
@@ -125,26 +129,19 @@ Invaders.prototype.update = function invadersUpdate (scope, tFrame) {
 		}, this);
 	}
 
+	// Fires a bullet from a random entity
 	function fireRandomBullet() {
-
-		// Returns a random number between min (inclusive) and max (exclusive)
-		function getRandomInt(min, max) {
-  			min = Math.ceil(min);
-  			max = Math.floor(max);
-  			return Math.floor(Math.random() * (max - min)) + min;
-		}
 		var randomNum = getRandomInt(0, entityIdBuffer.length);
-		var entity = entities[entityIdBuffer[randomNum]]; // returns a random entity from our buffer id array
+		var entity = entities[entityIdBuffer[randomNum]]; // returns a random entity constrained to our `entityIdBuffer`
 		
 		// Takes one of the inactive bullet entities from our array
 		// and set its position to the random selected entity
-        var bullet = scope.state.inactiveEntities.bullets.pop();
-        bullet.state.velocity *= -1; // switch bullet direction
-        bullet.pc = true;	// set bullet to `pc`
-        bullet.sprite.color = '#EA1D1D'; // set bullet sprite color
-        bullet.state.position.x = entity.state.position.x + (entity.sprite.width / 2) - (bullet.sprite.width / 2); 
-        bullet.state.position.y = entity.state.position.y;
-        scope.state.entities[bullet.id] = bullet;  // Place bullet in our active state of entities
+    var bullet = scope.state.inactiveEntities.bullets.pop();
+    bullet.state.velocity *= -1; // switch bullet direction
+    bullet.pc = true;	// set bullet to `pc`
+    bullet.state.position.x = entity.state.position.x + (entity.sprite.width / 2) - (bullet.sprite.width / 2); 
+    bullet.state.position.y = entity.state.position.y;
+    scope.state.entities[bullet.id] = bullet;  // Place bullet in our active state of entities
 	}
 
 	// Loop over all entites and store each entity's `id` in a buffer array

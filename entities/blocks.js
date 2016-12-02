@@ -1,10 +1,10 @@
 // /entities/blocks.js
 
-var Point = require('../utils/utils.math.js');
+var Point = require('../utils/utils.math.js').Point;
 var Entity = require('./entity.js');
 
 /** Block Module
- * Contains the delegate Block Object Constructor
+ * Contains the Block Object Constructor
  * and the helper function for creating the blocks.
  */
 
@@ -26,7 +26,10 @@ function createBlocks(scope, map) {
 		image: SPRITE_IMAGE
 	};
 
-	// Instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
+	// Instantiate the delegate object (reference to a prototype chain of methods)
+	// allows group entities to share render / update / collison methods
+	// over the delegate objects prototype chain. 
+	// Uses a form of Parasitic inheritance.
 	var delegateObj = new Block();
 
 	// Creates all the blocks and their delegate methods
@@ -37,9 +40,7 @@ function createBlocks(scope, map) {
  	}
  }
 
-// Delegate state object constructor for our blocks,
-// allows group entities to share render / update / collison methods
-// over the delegate objects prototype chain. 
+// Object constructor for our blocks,
 function Block() {}
 
 // Block render method
@@ -61,7 +62,7 @@ Block.prototype.update = function blockUpdate (scope) {
 
 // Block collision method
 Block.prototype.collision = function blockCollision (entity) {
-	// Doesn't matter which bullet it has collided with, result is the same
+	// Doesn't matter which bullet a block has collided with, result is the same
 	if (entity.group === 'bullet') {
 		this.kill();
 	}

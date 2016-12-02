@@ -5,6 +5,7 @@
  */
 function Entity(groupName, point, velocity, health, sprite) {
 
+    // Every entity gets a unique `id`
     Object.defineProperty( this, 'id', { value: Entity.prototype.count++ } );
     this.group = groupName;
     this.collides = true;
@@ -24,6 +25,7 @@ function Entity(groupName, point, velocity, health, sprite) {
     }
     if (sprite) {
         spriteColor = sprite.color;
+        spriteDefaultColor = sprite.defaultColor || null;
         spriteHeight = sprite.height;
         spriteWidth = sprite.width;
         spriteImage = sprite.image;
@@ -42,6 +44,7 @@ function Entity(groupName, point, velocity, health, sprite) {
 
     this.sprite = {
         color: spriteColor,
+        defaultColor: spriteDefaultColor,
         height: spriteHeight,
         width: spriteWidth,
         image: spriteImage

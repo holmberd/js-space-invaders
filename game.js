@@ -68,13 +68,13 @@ function Game(w, h, targetFps, showFps) {
     // Instantiate input handler module
     input.init();
 
-    // Instantiate players, bullets and npc's modules with the current scope
+    // Instantiate holder for our entities
     this.state.entities = this.state.entities || {};
     this.state.inactiveEntities = this.state.inactiveEntities || {};
     this.state.inactiveEntities.bullets = [];
 
     // Instantiate the game menu module
-    // Menu can be passed as an `Entity` as it has a `update` and `render` method
+    // Menu is passed as an `Entity` as it has a `update` and `render` method
     this.state.entities.menu = new Menu();
 
     return this;

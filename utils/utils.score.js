@@ -1,7 +1,7 @@
 // /utils/utils.score.js
 
 /** Score Module
- * Contains function that keep track on game states
+ * Contains helper functions that keep track of game states:
  * if player has lost / won game.
  */
 

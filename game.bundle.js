@@ -263,11 +263,11 @@ module.exports = gameUpdate;
 },{"../utils/utils.score.js":17}],6:[function(require,module,exports){
 // /entities/blocks.js
 
-var Point = require('../utils/utils.math.js');
+var Point = require('../utils/utils.math.js').Point;
 var Entity = require('./entity.js');
 
 /** Block Module
- * Contains the delegate block class
+ * Contains the Block Object Constructor
  * and the helper function for creating the blocks.
  */
 
@@ -289,7 +289,10 @@ function createBlocks(scope, map) {
 		image: SPRITE_IMAGE
 	};
 
-	// Instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
+	// Instantiate the delegate object (reference to a prototype chain of methods)
+	// allows group entities to share render / update / collison methods
+	// over the delegate objects prototype chain. 
+	// Uses a form of Parasitic inheritance.
 	var delegateObj = new Block();
 
 	// Creates all the blocks and their delegate methods
@@ -300,9 +303,7 @@ function createBlocks(scope, map) {
  	}
  }
 
-// Delegate state object constructor for our blocks,
-// allows group entities to share render / update / collison methods
-// over the delegate objects prototype chain. 
+// Object constructor for our blocks,
 function Block() {}
 
 // Block render method
@@ -324,7 +325,7 @@ Block.prototype.update = function blockUpdate (scope) {
 
 // Block collision method
 Block.prototype.collision = function blockCollision (entity) {
-	// Doesn't matter which bullet it has collided with, result is the same
+	// Doesn't matter which bullet a block has collided with, result is the same
 	if (entity.group === 'bullet') {
 		this.kill();
 	}
@@ -335,11 +336,11 @@ module.exports = createBlocks;
 },{"../utils/utils.math.js":15,"./entity.js":8}],7:[function(require,module,exports){
 // /entities/Bullet.js
 
-var Point = require('../utils/utils.math.js');
+var Point = require('../utils/utils.math.js').Point;
 var Entity = require('./entity.js');
 
 /** Bullet Module
- * Contains the delegate bullet class 
+ * Contains the Bullet Object Constructor 
  * and the helper function for creating the bullets.
  */
 
@@ -349,7 +350,8 @@ function createBullets(scope) {
     // Setup bullet constants
     var SPRITE_HEIGHT = 8,
     SPRITE_WIDTH = 3,
-    SPRITE_COLOR = '#E7E7E7',
+    //SPRITE_COLOR = '#E7E7E7',
+    SPRITE_COLOR = '#EA1D1D',
     SPRITE_IMAGE = null,
     BULLET_VELOCITY = -6,
     BULLET_HEALTH = 1,
@@ -359,12 +361,16 @@ function createBullets(scope) {
 
     var sprite = {
         color: SPRITE_COLOR,
+        defaultColor: SPRITE_COLOR,
         height: SPRITE_HEIGHT,
         width: SPRITE_WIDTH,
         image: SPRITE_IMAGE
     };
 
-    // Instantiate the delegate object (it is basicly a pointer to a prototype chain of methods)
+    // Instantiate the delegate object (reference to a prototype chain of methods)
+    // allows group entities to share render / update / collison methods
+    // over the delegate objects prototype chain. 
+    // Uses a form of Parasitic inheritance.
     var delegateObj = new Bullet();
 
     // Instantiate bullets to store as inactive entities, 
@@ -377,9 +383,7 @@ function createBullets(scope) {
     }
 }
 
-// Delegate state object constructor for our bullets,
-// allows group entities to share render / update / collison methods
-// over the delegate objects prototype chain. 
+// Bullet object constructor
 function Bullet() {}
 
 // Bullet render method
@@ -397,7 +401,7 @@ Bullet.prototype.render = function bulletRender (scope) {
 Bullet.prototype.update = function bulletUpdate (scope) {
         var point = new Point(0, this.state.position.y);
 
-        // If bullet is in game boundary update movement, 
+        // If bullet is in boundary, update movement, 
         // otherwise set `killed` flag and remove before next update.
         if (this.inBoundary(scope)) {
             this.state.position.y += this.state.velocity; // Bullet direction is velocity dependent pos/neg
@@ -424,6 +428,8 @@ Bullet.prototype.reset = function () {
     this.state.killed = false;
     this.pc = false;
     this.state.velocity = -Math.abs(this.state.velocity); // Restore velocity to default negative number
+    this.sprite.color = this.sprite.defaultColor;
+    // console.log('defaultColor', this.sprite.defaultColor);
     return this;
 };
 
@@ -432,10 +438,11 @@ module.exports = createBullets;
 // /entities/entity.js
 
 /** Entity Module
- * Contains the main entity class.
+ * Contains the main Entity Object Constructor
  */
 function Entity(groupName, point, velocity, health, sprite) {
 
+    // Every entity gets a unique `id`
     Object.defineProperty( this, 'id', { value: Entity.prototype.count++ } );
     this.group = groupName;
     this.collides = true;
@@ -455,6 +462,7 @@ function Entity(groupName, point, velocity, health, sprite) {
     }
     if (sprite) {
         spriteColor = sprite.color;
+        spriteDefaultColor = sprite.defaultColor || null;
         spriteHeight = sprite.height;
         spriteWidth = sprite.width;
         spriteImage = sprite.image;
@@ -473,6 +481,7 @@ function Entity(groupName, point, velocity, health, sprite) {
 
     this.sprite = {
         color: spriteColor,
+        defaultColor: spriteDefaultColor,
         height: spriteHeight,
         width: spriteWidth,
         image: spriteImage
@@ -530,14 +539,17 @@ module.exports = Entity;
 },{}],9:[function(require,module,exports){
 // /entities/invader.js
 
-var Point = require('../utils/utils.math.js');
+var Point = require('../utils/utils.math.js').Point;
+var getRandomInt = require('../utils/utils.math.js').getRandomInt;
 var Entity = require('./entity.js');
 
 /** Invader Module
- * Contains main wrapper invaders class, invader delegate class 
- * and helper function for creating the invaders. 
- * Main invaders class act as a wrapper for the invader delegate class,
- * which delegates its methods to the invader entities.
+ * Contains main wrapper Invaders Object constructor,
+ * Invader Object constructor and helper function for creating the invaders.
+ *
+ * Main Invaders Constructor holds all invaders and delegates its methods trough 
+ * the Invader delegate Object, which in turn delegates 
+ * its methods to the each invader entitie.
  */
 
 function createInvaders(scope, map) {
@@ -567,7 +579,7 @@ function createInvaders(scope, map) {
 
 	// Instantiate the wrapper for all our entities
 	var invaders = new Entity('invaders');
-	invaders.collides = false; // Delegate class for our entites will not have a collision method
+	invaders.collides = false; // Delegate Object for our entites will not have a collision method
 	invaders.before = null; // Helper property for time calc with tFrame
 	invaders.velocityStep = INVADERS_VELOCITY_STEP; // Each invader's step to update each frame
 	invaders.state.velocity = INVADER_VELOCITY; // Init velocity
@@ -641,6 +653,7 @@ Invaders.prototype.update = function invadersUpdate (scope, tFrame) {
 		}
 		return { bottom: bottom.id, right: right.id, left: left.id };
 	}
+
 	// Update all invader entities in the vertical direction
 	function moveAllVertical(arr) {
 		arr.forEach(function (id) {
@@ -655,26 +668,20 @@ Invaders.prototype.update = function invadersUpdate (scope, tFrame) {
 		}, this);
 	}
 
+	// Fires a bullet from a random entity
 	function fireRandomBullet() {
-
-		// Returns a random number between min (inclusive) and max (exclusive)
-		function getRandomInt(min, max) {
-  			min = Math.ceil(min);
-  			max = Math.floor(max);
-  			return Math.floor(Math.random() * (max - min)) + min;
-		}
 		var randomNum = getRandomInt(0, entityIdBuffer.length);
-		var entity = entities[entityIdBuffer[randomNum]]; // returns a random entity from our buffer id array
+		var entity = entities[entityIdBuffer[randomNum]]; // returns a random entity constrained to our `entityIdBuffer`
 		
 		// Takes one of the inactive bullet entities from our array
 		// and set its position to the random selected entity
-        var bullet = scope.state.inactiveEntities.bullets.pop();
-        bullet.state.velocity *= -1; // switch bullet direction
-        bullet.pc = true;	// set bullet to `pc`
-        bullet.sprite.color = '#EA1D1D'; // set bullet sprite color
-        bullet.state.position.x = entity.state.position.x + (entity.sprite.width / 2) - (bullet.sprite.width / 2); 
-        bullet.state.position.y = entity.state.position.y;
-        scope.state.entities[bullet.id] = bullet;  // Place bullet in our active state of entities
+    var bullet = scope.state.inactiveEntities.bullets.pop();
+    bullet.state.velocity *= -1; // switch bullet direction
+    bullet.pc = true;	// set bullet to `pc`
+    //bullet.sprite.color = '#EA1D1D'; // set bullet sprite color
+    bullet.state.position.x = entity.state.position.x + (entity.sprite.width / 2) - (bullet.sprite.width / 2); 
+    bullet.state.position.y = entity.state.position.y;
+    scope.state.entities[bullet.id] = bullet;  // Place bullet in our active state of entities
 	}
 
 	// Loop over all entites and store each entity's `id` in a buffer array
@@ -772,15 +779,15 @@ module.exports = createInvaders;
 // /entities/player.js
 
 var input = require('../utils/utils.input.js');
-var Point = require('../utils/utils.math.js');
+var Point = require('../utils/utils.math.js').Point;
 var Entity = require('./entity.js');
 
 /** Player Module
- * Create main Player class
+ * Create main Player Object Constructor
  */
 function Player(scope) {
 
-    // set up const player globals
+    // Setup const player globals
     var START_POS_X = scope.constants.width / 2 - 22,
         START_POS_Y = scope.constants.height - 45,
         SPRITE_COLOR = '#E7E7E7',
@@ -967,6 +974,16 @@ module.exports = Player;
 },{"../utils/utils.input.js":14,"../utils/utils.math.js":15,"./entity.js":8}],11:[function(require,module,exports){
 // /game.js
 
+/**
+ * This creates an instance of the game 'Space Invaders'.
+ * Engine and game written in Vanilla JavaScript
+ *
+ * Licensed under the MIT license.
+ *
+ * Dag Holmberg
+ * https://github.com/holmberd
+ */
+
 var generateCanvas = require('./utils/utils.canvas.js');
 var gameLoop = require('./core/game.loop.js');
 var gameUpdate = require('./core/game.update.js');
@@ -1025,13 +1042,13 @@ function Game(w, h, targetFps, showFps) {
     // Instantiate input handler module
     input.init();
 
-    // Instantiate players, bullets and npc's modules with the current scope
+    // Instantiate holder for our entities
     this.state.entities = this.state.entities || {};
     this.state.inactiveEntities = this.state.inactiveEntities || {};
     this.state.inactiveEntities.bullets = [];
 
     // Instantiate the game menu module
-    // Menu can be passed as an `Entity` as it has a `update` and `render` method
+    // Menu is passed as an `Entity` as it has a `update` and `render` method
     this.state.entities.menu = new Menu();
 
     return this;
@@ -1116,10 +1133,11 @@ module.exports = inputHandler;
 // /utils/utils.math.js
 
 /** Math Module
- * Contains the main Point class that has helper
- * methods for doing calculations on positioning in a grid.
+ * Contains helper methods for doing calculations.
  */
 
+// Point object constructor
+// Contains methods for vector calculations.
 function Point(x, y) {
 	this.x = x || 0;
 	this.y = y || 0;
@@ -1127,24 +1145,35 @@ function Point(x, y) {
 
 Point.prototype.constructor = Point;
 
+// If y is omitted, both x and y will be set to x.
 Point.prototype.set = function (x, y){
-    this.x = x || 0;
-    this.y = y || ( (y !== 0) ? this.x : 0 ); // If y is omitted, both x and y will be set to x.
+  this.x = x || 0;
+  this.y = y || ( (y !== 0) ? this.x : 0 );
 };
 
 Point.prototype.clone = function () {
-    return new Point(this.x, this.y);
+  return new Point(this.x, this.y);
 };
 
 Point.prototype.copy = function (p) {
-    this.set(p.x, p.y);
+  this.set(p.x, p.y);
 };
 
 Point.prototype.equals = function (p) {
-    return (p.x === this.x) && (p.y === this.y);
+  return (p.x === this.x) && (p.y === this.y);
 };
 
-module.exports = Point;
+// Returns a random number between min (inclusive) and max (exclusive)
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+module.exports = {
+  Point: Point,
+  getRandomInt: getRandomInt
+};
 },{}],16:[function(require,module,exports){
 // /utils/utils.menu.js
 
@@ -1160,13 +1189,11 @@ var map = require('../conf/map.json');
  * a game menu.
  */
 
-// Menu object constructor
 function Menu() {
 	this.collide = false;
 	this.group = 'menu';
 }
 
-// Menu update method
 Menu.prototype.update = function (scope) {
 
     if (input.isDown(input.ENTER)) {
@@ -1174,19 +1201,20 @@ Menu.prototype.update = function (scope) {
     }
 };
 
-// Menu render method
 Menu.prototype.render = function (scope) {
 
     var FONT = '20px Courier',
         FILLSTYLE_COLOR = '#ff0';
 
 	if (scope.state.win) {
-        scope.context.drawImage(scope.sprites.win, (scope.constants.width / 2) - (70 / 2), scope.constants.height / 2 - 170);
+        scope.context.drawImage(scope.sprites.win, (scope.constants.width / 2) - (70 / 2), 
+            scope.constants.height / 2 - 170);
 		scope.context.font = FONT;
 		scope.context.fillStyle = FILLSTYLE_COLOR;
     	scope.context.fillText('You Win!', 50 , scope.constants.height / 2 - 50);
 	} else if (scope.state.lost) {
-        scope.context.drawImage(scope.sprites.lost, (scope.constants.width / 2) - (70 / 2), scope.constants.height / 2 - 170);
+        scope.context.drawImage(scope.sprites.lost, (scope.constants.width / 2) - (70 / 2), 
+            scope.constants.height / 2 - 170);
 		scope.context.font = FONT;
 		scope.context.fillStyle = FILLSTYLE_COLOR;
     	scope.context.fillText('You Lost!', 50 , scope.constants.height / 2 - 50);
@@ -1198,9 +1226,11 @@ Menu.prototype.render = function (scope) {
     scope.context.fillText('Press \'ENTER\' to play', 50 , scope.constants.height / 2);
 };
 
-// Menu startGame method
-// This will be called with the game state when the 
-// game is actually started.
+/** Menu startGame Method
+ * This will be called with the game state when the 
+ * game is initially started.
+ */
+ 
 Menu.prototype.startGame = function (scope) {
 
     // Setup the entities containers
@@ -1242,7 +1272,7 @@ module.exports = Menu;
 // /utils/utils.score.js
 
 /** Score Module
- * Contains function that keep track on game states
+ * Contains helper functions that keep track of game states:
  * if player has lost / won game.
  */
 

@@ -12,13 +12,11 @@ var map = require('../conf/map.json');
  * a game menu.
  */
 
-// Menu object constructor
 function Menu() {
 	this.collide = false;
 	this.group = 'menu';
 }
 
-// Menu update method
 Menu.prototype.update = function (scope) {
 
     if (input.isDown(input.ENTER)) {
@@ -26,19 +24,20 @@ Menu.prototype.update = function (scope) {
     }
 };
 
-// Menu render method
 Menu.prototype.render = function (scope) {
 
     var FONT = '20px Courier',
         FILLSTYLE_COLOR = '#ff0';
 
 	if (scope.state.win) {
-        scope.context.drawImage(scope.sprites.win, (scope.constants.width / 2) - (70 / 2), scope.constants.height / 2 - 170);
+        scope.context.drawImage(scope.sprites.win, (scope.constants.width / 2) - (70 / 2), 
+            scope.constants.height / 2 - 170);
 		scope.context.font = FONT;
 		scope.context.fillStyle = FILLSTYLE_COLOR;
     	scope.context.fillText('You Win!', 50 , scope.constants.height / 2 - 50);
 	} else if (scope.state.lost) {
-        scope.context.drawImage(scope.sprites.lost, (scope.constants.width / 2) - (70 / 2), scope.constants.height / 2 - 170);
+        scope.context.drawImage(scope.sprites.lost, (scope.constants.width / 2) - (70 / 2), 
+            scope.constants.height / 2 - 170);
 		scope.context.font = FONT;
 		scope.context.fillStyle = FILLSTYLE_COLOR;
     	scope.context.fillText('You Lost!', 50 , scope.constants.height / 2 - 50);
@@ -50,9 +49,11 @@ Menu.prototype.render = function (scope) {
     scope.context.fillText('Press \'ENTER\' to play', 50 , scope.constants.height / 2);
 };
 
-// Menu startGame method
-// This will be called with the game state when the 
-// game is actually started.
+/** Menu startGame Method
+ * This will be called with the game state when the 
+ * game is initially started.
+ */
+ 
 Menu.prototype.startGame = function (scope) {
 
     // Setup the entities containers

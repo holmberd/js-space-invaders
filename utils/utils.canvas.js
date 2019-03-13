@@ -1,11 +1,10 @@
-// /utils/utils.canvas.js
-
-/** Canvas Module
+/** 
+ * Canvas Module
  * Create main canvas for the game.
  */
 
 function generateCanvas(w, h) {
-  console.log('Generating canvas.');
+  console.log('Generating canvas...');
 
   var canvas = document.createElement('canvas'),
       context = canvas.getContext('2d');

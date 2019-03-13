@@ -1,6 +1,5 @@
-// /utils/utils.input.js
-
-/** Input Module
+/** 
+ * Input Module
  * This module handles all the input events from the player
  * and is part of the state machine. 
  */

@@ -1,13 +1,8 @@
-// /game.js
-
 /**
  * This creates an instance of the game 'Space Invaders'.
- * Engine and game written in Vanilla JavaScript
  *
- * Licensed under the MIT license.
- *
- * Dag Holmberg
- * https://github.com/holmberd
+ * @author Dag Holmberg, https://github.com/holmberd
+ * @license MIT
  */
 
 var generateCanvas = require('./utils/utils.canvas.js');
@@ -22,66 +17,65 @@ var createInvaders = require('./entities/invader.js');
 var createBlocks = require('./entities/blocks.js');
 var createBullets = require('./entities/bullet.js');
 var loadSprites = require('./utils/utils.sprites.js');
-var map = require('./conf/map.json');
+var map = require('./conf/map.json'); // 31 rows & 24 cols
 
 var container = document.querySelector('#container');
 
 // Create game base class
 function Game(w, h, targetFps, showFps) {
 
-    // Setup some constants
-    this.constants = {
-        offset: 25,
-        width: w,
-        height: h,
-        targetFps: targetFps,
-        showFps: showFps
-    };
+  // Setup some constants
+  this.constants = {
+    offset: 25,
+    width: w,
+    height: h,
+    targetFps: targetFps,
+    showFps: showFps
+  };
 
-    // Load sprites from JSON as data-uri
-    this.sprites = loadSprites();
+  // Load sprites from JSON as data-uri
+  this.sprites = loadSprites();
 
-    // Instantiate an empty state object
-    this.state = {};
+  // Instantiate an empty state object
+  this.state = {};
 
-    // Setup game progression states
-    this.state.start = false;
-    this.state.win = false;
-    this.state.lost = false;
+  // Setup game progression states
+  this.state.start = false;
+  this.state.win = false;
+  this.state.lost = false;
 
-    // Generate and store the canvas as a viewport global
-    this.viewport = generateCanvas(w, h);
-    this.viewport.id = "gameViewport";
+  // Generate and store the canvas as a viewport global
+  this.viewport = generateCanvas(w, h);
+  this.viewport.id = "gameViewport";
 
-    // Get and store the canvas context as a global
-    this.context = this.viewport.getContext('2d');
+  // Get and store the canvas context as a global
+  this.context = this.viewport.getContext('2d');
 
-    // Append the canvas node to our container
-    container.appendChild(this.viewport);
+  // Append the canvas node to our container
+  container.appendChild(this.viewport);
 
-    // Instantiate core modules with the current scope
-    this.update = gameUpdate(this);
-    this.collision = gameCollision(this);
-    this.render = gameRender(this);
-    this.loop = gameLoop(this);
+  // Instantiate core modules with the current scope
+  this.update = gameUpdate(this);
+  this.collision = gameCollision(this);
+  this.render = gameRender(this);
+  this.loop = gameLoop(this);
 
-    // Instantiate input handler module
-    input.init();
+  // Instantiate input handler module
+  input.init();
 
-    // Instantiate holder for our entities
-    this.state.entities = this.state.entities || {};
-    this.state.inactiveEntities = this.state.inactiveEntities || {};
-    this.state.inactiveEntities.bullets = [];
+  // Instantiate holder for our entities
+  this.state.entities = this.state.entities || {};
+  this.state.inactiveEntities = this.state.inactiveEntities || {};
+  this.state.inactiveEntities.bullets = [];
 
-    // Instantiate the game menu module
-    // Menu is passed as an `Entity` as it has a `update` and `render` method
-    this.state.entities.menu = new Menu();
+  // Instantiate the game menu module
+  // Menu is passed as an `Entity` as it has a `update` and `render` method
+  this.state.entities.menu = new Menu();
 
-    return this;
+  return this;
 }
 
 // Instantiate the game in a global
-// window.game = new Game(360, 450, 30, true); // with fps counter
 window.game = new Game(360, 450, 30, false);
 
 // Export the game as a module

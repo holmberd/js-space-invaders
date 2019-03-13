@@ -1,11 +1,12 @@
-// /utils/utils.math.js
-
-/** Math Module
+/** 
+ * Math Module
  * Contains helper methods for doing calculations.
  */
 
-// Point object constructor
-// Contains methods for vector calculations.
+/**
+ * Point object constructor
+ * Contains methods for vector calculations.
+ */
 function Point(x, y) {
 	this.x = x || 0;
 	this.y = y || 0;

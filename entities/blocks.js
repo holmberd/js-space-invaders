@@ -1,12 +1,10 @@
-// /entities/blocks.js
-
-var Point = require('../utils/utils.math.js').Point;
-var Entity = require('./entity.js');
-
-/** Block Module
- * Contains the Block Object Constructor
- * and the helper function for creating the blocks.
+/** 
+ * Block Module
+ * Contains the Block Object Constructor and the helper function for creating the blocks.
  */
+
+ var Point = require('../utils/utils.math.js').Point;
+var Entity = require('./entity.js');
 
 // Create our blocks
 function createBlocks(scope, map) {

@@ -1,10 +1,5 @@
-// /entities/invader.js
-
-var Point = require('../utils/utils.math.js').Point;
-var getRandomInt = require('../utils/utils.math.js').getRandomInt;
-var Entity = require('./entity.js');
-
-/** Invader Module
+/** 
+ * Invader Module
  * Contains main wrapper Invaders Object constructor,
  * Invader Object constructor and helper function for creating the invaders.
  *
@@ -12,6 +7,10 @@ var Entity = require('./entity.js');
  * the Invader delegate Object, which in turn delegates 
  * its methods to the each invader entitie.
  */
+
+var Point = require('../utils/utils.math.js').Point;
+var getRandomInt = require('../utils/utils.math.js').getRandomInt;
+var Entity = require('./entity.js');
 
 function createInvaders(scope, map) {
 
@@ -57,11 +56,11 @@ function createInvaders(scope, map) {
 
 	// Instantiate all the invaders and set them as active entities in the game state
  	for (var i = 0, invader = {}; i < NUM_OF_INVADERS; i++) {
- 		if (i <= 11) invaderSprite.image = invaderImages[0];
- 		if (i > 11 && i <= 23) invaderSprite.image = invaderImages[1];
- 		if (i > 23 && i <= 35) invaderSprite.image = invaderImages[2];
- 		if (i > 35 && i <= 47) invaderSprite.image = invaderImages[3];
- 		if (i > 47) invaderSprite.image = invaderImages[4];
+ 		if (i <= 11) {invaderSprite.image = invaderImages[0];}
+ 		if (i > 11 && i <= 23) {invaderSprite.image = invaderImages[1];}
+ 		if (i > 23 && i <= 35) {invaderSprite.image = invaderImages[2];}
+ 		if (i > 35 && i <= 47) {invaderSprite.image = invaderImages[3];}
+ 		if (i > 47) {invaderSprite.image = invaderImages[4];}
  		invader = new Entity(INVADER_GROUP_NAME, new Point(map[i][0], map[i][1]), INVADER_VELOCITY, INVADER_HEALTH, invaderSprite);
  		invader.delegate = delegateObj;
  		scope.state.entities[invader.id] = invader;
@@ -212,9 +211,9 @@ Invader.prototype.render = function invaderRender (scope) {
 		this.state.position.x,
 		this.state.position.y, 
 		this.sprite.width, 
-		this.sprite.height);
-
-    return this;
+		this.sprite.height
+	);
+  return this;
 };
 
 // Left empty, because it is handled by the global `invaders` update method

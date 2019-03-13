@@ -1,18 +1,22 @@
-// /utils/utils.score.js
-
-/** Score Module
+/** 
+ * Score Module
  * Contains helper functions that keep track of game states:
  * if player has lost / won game.
  */
 
 function gameScore(scope) {
 	if (scope.state.win || scope.state.lost) {
-		window.cancelAnimationFrame(scope.loop.stopLoop); // Stops animation loop
-		scope.state.start = false; // Reset game start state
-		var menu = scope.state.inactiveEntities.menu; // Get menu from `inactiveEntities`
+    // Stops animation loop
+		window.cancelAnimationFrame(scope.loop.stopLoop);
+    // Reset game start state
+		scope.state.start = false;
+    // Get menu from `inactiveEntities`
+		var menu = scope.state.inactiveEntities.menu;
 		scope.state.entities = {};
-		scope.state.entities.menu = menu; // Put menu in active entities
-		scope.loop.main(); // Re-start game loop
+    // Put menu in active entities
+		scope.state.entities.menu = menu;
+    // Re-start game loop
+		scope.loop.main();
 	}
 	return; 
 }

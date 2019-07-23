@@ -29,7 +29,7 @@ function Entity(groupName, point, velocity, health, sprite) {
     spriteImage = sprite.image;
   }
 
-  // Create the initial state
+  // Initial state
   this.state = {
     killed: false,
     position: {
@@ -88,7 +88,6 @@ Entity.prototype.hasCollidedWith = function (entity) {
     rect1.y > rect2.y;
 };
 
-// Set entity `killed` flag to `true`
 Entity.prototype.kill = function () {
   this.state.killed = true;
   return this;

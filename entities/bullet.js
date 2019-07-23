@@ -47,7 +47,6 @@ function createBullets(scope) {
 // Bullet object constructor
 function Bullet() {}
 
-// Bullet render method
 Bullet.prototype.render = function bulletRender (scope) {
   scope.context.fillStyle = this.sprite.color;
   scope.context.fillRect(
@@ -58,7 +57,6 @@ Bullet.prototype.render = function bulletRender (scope) {
   );
 };
 
-// Bullet update method
 Bullet.prototype.update = function bulletUpdate (scope) {
   var point = new Point(0, this.state.position.y);
   // If bullet is in boundary, update movement, 
@@ -72,7 +70,6 @@ Bullet.prototype.update = function bulletUpdate (scope) {
   }
 };
 
-// Bullet collision method
 Bullet.prototype.collision = function (entity) {
   if (entity.group === 'player' && this.pc) {
     // (this.pc) Player's bullets can't collide with player
@@ -86,7 +83,6 @@ Bullet.prototype.collision = function (entity) {
   return this;
 };
 
-// Bullet reset method
 Bullet.prototype.reset = function () {
   this.state.killed = false;
   this.pc = false;

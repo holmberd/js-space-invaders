@@ -31,7 +31,8 @@ function Player(scope) {
       beforeFireRate = null,
       MIN_MS_FIRE = 500;
 
-  var point = new Point(START_POS_X, START_POS_Y); // Player starting point
+  // Player starting point
+  var point = new Point(START_POS_X, START_POS_Y);
   var sprite = {
       color: SPRITE_COLOR,
       height: SPRITE_HEIGHT,
@@ -122,7 +123,7 @@ function Player(scope) {
     }
     // If key is pressed, fire bullet
     var fireState = fireInputHandler(tFrame);
-    if (fireState && !player.state.died) { // Frevent player from firing if `died` state
+    if (fireState && !player.state.died) {
       fireState.enter();
     }
     // If player died(lost life), keep in 'limbo' for MIN_MS
@@ -139,7 +140,6 @@ function Player(scope) {
     }       
   };
 
-  // Player collision method
   player.collision = function playerCollision (entity) {
     // If player gets hit by invader fire and player is not already in
     // a dead state, then player lose one life.
@@ -157,7 +157,6 @@ function Player(scope) {
     return this;
   };
 
-  // Draw the player on the canvas
   player.render = function playerRender () {
     if (player.state.died) {
       scope.context.globalAlpha = 0.5;

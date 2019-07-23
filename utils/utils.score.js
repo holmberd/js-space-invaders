@@ -5,20 +5,20 @@
  */
 
 function gameScore(scope) {
-	if (scope.state.win || scope.state.lost) {
+  if (scope.state.win || scope.state.lost) {
     // Stops animation loop
-		window.cancelAnimationFrame(scope.loop.stopLoop);
+    window.cancelAnimationFrame(scope.loop.stopLoop);
     // Reset game start state
-		scope.state.start = false;
+    scope.state.start = false;
     // Get menu from `inactiveEntities`
-		var menu = scope.state.inactiveEntities.menu;
-		scope.state.entities = {};
+    var menu = scope.state.inactiveEntities.menu;
+    scope.state.entities = {};
     // Put menu in active entities
-		scope.state.entities.menu = menu;
+    scope.state.entities.menu = menu;
     // Re-start game loop
-		scope.loop.main();
-	}
-	return; 
+    scope.loop.main();
+  }
+  return; 
 }
 
 module.exports = gameScore;

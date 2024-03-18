@@ -1,8 +1,7 @@
 # js-space-invaders
+Simple Javascript Game engine implementation running Space Invaders.
 
-Space Invaders JavaScript implementation using HTML5-Canvas and Browserify for handling Modules.
-
-Since coming across Doug McInnes [Asteroids](http://www.dougmcinnes.com/2010/05/12/html-5-asteroids/) I thought it would be fun to try and write a game engine in JavaScript. It took a week of reading up on game engines and another week of actually write the code and putting Space Invaders on it.
+Inspired by seeing Doug McInnes [Asteroids](http://www.dougmcinnes.com/2010/05/12/html-5-asteroids/).
 
 ## Example:
 
